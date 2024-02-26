@@ -1,0 +1,184 @@
+{
+  "name": "@simplysf/simply",
+  "description": "Salesforce CLI Plugins created by @SimplySF",
+  "version": "1.0.0",
+  "author": "@ClayChipps",
+  "homepage": "https://github.com/SimplySF/simply",
+  "bugs": "https://github.com/SimplySF/simply/issues",
+  "repository": "@ClayChipps/sf-chipps",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "yarn@1.22.19",
+  "files": [
+    "/lib",
+    "/messages",
+    "/npm-shrinkwrap.json",
+    "/oclif.lock",
+    "/oclif.manifest.json"
+  ],
+  "keywords": [
+    "oclif",
+    "salesforce",
+    "sf",
+    "simply"
+  ],
+  "license": "BSD-3-Clause",
+  "exports": "./dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "oclif": {
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "bin": "sf",
+    "binAliases": [
+      "sfdx"
+    ],
+    "commands": "lib/commands",
+    "devPlugins": [
+      "@oclif/plugin-command-snapshot"
+    ],
+    "exitCodes": {
+      "default": 1,
+      "failedFlagParsing": 2,
+      "failedFlagValidation": 2,
+      "invalidArgsSpec": 2,
+      "nonExistentFlag": 2,
+      "requiredArgs": 2,
+      "unexpectedArgs": 2
+    },
+    "flexibleTaxonomy": true,
+    "plugins": [
+      "@simplysf/simply-data",
+      "@simplysf/simply-package"
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/<%- version %>/<%- commandPath %>",
+    "topicSeparator": " ",
+    "warn-if-update-available": {
+      "timeoutInDays": 7
+    }
+  },
+  "dependencies": {
+    "debug": "^4.3.4",
+    "@simplysf/simply-data": "1.1.2",
+    "@simplysf/simply-package": "1.1.2"
+  },
+  "devDependencies": {
+    "@oclif/plugin-command-snapshot": "^5.0.7",
+    "@salesforce/plugin-command-reference": "^3.0.64",
+    "@salesforce/ts-sinon": "^1.4.19",
+    "@simplysf/dev-scripts": "^2.0.0",
+    "@types/debug": "^4.1.12",
+    "oclif": "^4.4.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "wireit",
+    "clean": "sf-clean",
+    "clean-all": "sf-clean all",
+    "compile": "wireit",
+    "docs": "sf-docs",
+    "format": "wireit",
+    "link-check": "wireit",
+    "lint": "wireit",
+    "oclif-artifacts": "oclif manifest",
+    "postpack": "sf-clean",
+    "prepack": "sf-prepack",
+    "prepare": "sf-install && yarn compile && yarn lint",
+    "prepublishOnly": "npm shrinkwrap",
+    "promote": "oclif promote",
+    "readme": "oclif readme --no-aliases",
+    "test": "wireit",
+    "test:only": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "dependencies": [
+        "compile",
+        "lint"
+      ]
+    },
+    "compile": {
+      "command": "tsc -p . --pretty --incremental",
+      "files": [
+        "src/**/*.ts",
+        "**/tsconfig.json",
+        "messages/**"
+      ],
+      "output": [
+        "lib/**",
+        "*.tsbuildinfo"
+      ],
+      "clean": "if-file-deleted"
+    },
+    "format": {
+      "command": "prettier --write \"+(src|test|schemas)/**/*.+(ts|js|json)|command-snapshot.json\"",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "schemas/**/*.json",
+        "command-snapshot.json",
+        ".prettier*"
+      ],
+      "output": []
+    },
+    "lint": {
+      "command": "eslint src test --color --cache --cache-location .eslintcache",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "messages/**",
+        "**/.eslint*",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test:compile": {
+      "command": "tsc -p \"./test\" --pretty",
+      "files": [
+        "test/**/*.ts",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test": {
+      "dependencies": [
+        "test:compile",
+        "test:only",
+        "lint"
+      ]
+    },
+    "test:only": {
+      "command": "nyc mocha \"test/**/*.test.ts\"",
+      "env": {
+        "FORCE_COLOR": "2"
+      },
+      "files": [
+        "test/**/*.ts",
+        "src/**/*.ts",
+        "**/tsconfig.json",
+        ".mocha*",
+        "!*.nut.ts",
+        ".nycrc"
+      ],
+      "output": []
+    },
+    "link-check": {
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "files": [
+        "./*.md",
+        "./!(CHANGELOG).md",
+        "messages/**/*.md"
+      ],
+      "output": []
+    }
+  }
+}
