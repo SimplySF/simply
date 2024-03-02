@@ -71,7 +71,7 @@
     "@oclif/plugin-command-snapshot": "^5.0.7",
     "@salesforce/plugin-command-reference": "^3.0.64",
     "@salesforce/ts-sinon": "^1.4.19",
-    "@simplysf/dev-scripts": "^2.0.0",
+    "@simplysf/dev-scripts": "^2.1.2",
     "@types/debug": "^4.1.12",
     "oclif": "^4.4.11",
     "ts-node": "^10.9.2",
