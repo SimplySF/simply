@@ -51,7 +51,7 @@ EXAMPLES
   $ sf simply data file upload --file-path fileToUpload.txt --first-publish-location-id 0019000000DmehK --target-org myTargetOrg
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.2/src/commands/simply/data/file/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.5/src/commands/simply/data/file/upload.ts)_
 
 ## `sf simply data files upload`
 
@@ -95,7 +95,7 @@ FLAG DESCRIPTIONS
     quasi concurrent uploads. Please note that setting this value too high can cause performance issues.
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.2/src/commands/simply/data/files/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.5/src/commands/simply/data/files/upload.ts)_
 
 ## `sf simply package dependencies install`
 
