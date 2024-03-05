@@ -1436,7 +1436,7 @@
     read-package-json-fast "^3.0.0"
     which "^3.0.0"
 
-"@oclif/core@^3", "@oclif/core@^3.15.1", "@oclif/core@^3.19.2", "@oclif/core@^3.19.3", "@oclif/core@^3.19.4", "@oclif/core@^3.19.6", "@oclif/core@^3.20.0":
+"@oclif/core@^3", "@oclif/core@^3.15.1", "@oclif/core@^3.19.2", "@oclif/core@^3.19.3", "@oclif/core@^3.19.6", "@oclif/core@^3.20.0":
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-3.20.0.tgz#534458dc6e8c46d8f03906aaadaca079e16a6554"
   integrity sha512-8BajhglY8frYGAS1whAukeouFZUN9MgQoLfNXtScPVEAjPlaD2BbSIAYQH2yF2qb/iVvbj/1DwYS3gqicYOq1A==
@@ -1835,13 +1835,13 @@
     got "13.0.0"
     p-queue "^8.0.1"
 
-"@simplysf/simply-package@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/@simplysf/simply-package/-/simply-package-1.1.2.tgz"
-  integrity sha512-rGqnVv6VvmMW//sXvy1AlqV7Nfdop50dXiaBW5ZXNYndCcOCWSrVdUg8iUAGTe1raohJOGVj8JEMjsDVkLp7mA==
+"@simplysf/simply-package@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@simplysf/simply-package/-/simply-package-1.1.4.tgz#bfea5e525d2af3fa4f2287ca6f0a4b352154cff4"
+  integrity sha512-vzRMu0wvaQZWP3Xv12w9Kg6mNGr89Oyzn5cABAQ4OqnQos1djV0kSeeGWbbHJaGzxqkGpDr3unMqQxo6Rs8wLw==
   dependencies:
-    "@oclif/core" "^3.19.4"
-    "@salesforce/core" "^6.5.5"
+    "@oclif/core" "^3.20.0"
+    "@salesforce/core" "^6.5.6"
     "@salesforce/kit" "^3.0.15"
     "@salesforce/packaging" "^3.2.21"
     "@salesforce/sf-plugins-core" "^5.0.13"
