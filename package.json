@@ -69,11 +69,11 @@
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.0.7",
-    "@salesforce/plugin-command-reference": "^3.0.64",
+    "@salesforce/plugin-command-reference": "^3.0.70",
     "@salesforce/ts-sinon": "^1.4.19",
     "@simplysf/dev-scripts": "^2.1.2",
     "@types/debug": "^4.1.12",
-    "oclif": "^4.4.21",
+    "oclif": "^4.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
