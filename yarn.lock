@@ -1787,10 +1787,10 @@
     read-package-json-fast "^3.0.0"
     which "^3.0.0"
 
-"@oclif/core@^3", "@oclif/core@^3.15.1", "@oclif/core@^3.19.2", "@oclif/core@^3.19.3", "@oclif/core@^3.19.6", "@oclif/core@^3.20.0":
-  version "3.20.0"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-3.20.0.tgz#534458dc6e8c46d8f03906aaadaca079e16a6554"
-  integrity sha512-8BajhglY8frYGAS1whAukeouFZUN9MgQoLfNXtScPVEAjPlaD2BbSIAYQH2yF2qb/iVvbj/1DwYS3gqicYOq1A==
+"@oclif/core@^3", "@oclif/core@^3.15.1", "@oclif/core@^3.19.2", "@oclif/core@^3.19.3", "@oclif/core@^3.19.6", "@oclif/core@^3.20.0", "@oclif/core@^3.21.0":
+  version "3.23.0"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-3.23.0.tgz#d0ccc5f99c376e4bcfce04e8e94efae8417a53f8"
+  integrity sha512-giQ/8Ft8yXWg4IyPVtynPb7ihoQsa3A/1Q53UIJIhh+8k+EedE3lJ01yn6sq6Ha35IGqsG1WhkeHzlJIuldEaw==
   dependencies:
     "@types/cli-progress" "^3.11.5"
     ansi-escapes "^4.3.2"
@@ -1808,6 +1808,7 @@
     indent-string "^4.0.0"
     is-wsl "^2.2.0"
     js-yaml "^3.14.1"
+    minimatch "^9.0.3"
     natural-orderby "^2.0.3"
     object-treeify "^1.1.33"
     password-prompt "^1.1.3"
@@ -7951,14 +7952,14 @@ obliterator@^2.0.1, obliterator@^2.0.2:
   resolved "https://registry.npmjs.org/obliterator/-/obliterator-2.0.4.tgz"
   integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
-oclif@^4.4.21:
-  version "4.4.21"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.4.21.tgz#ba61661f69f2b0e416e9c5d4375df3d202029b3c"
-  integrity sha512-Fjfxq+rY20nzdIcmq4M5yKUYG9KYRto63RvOgQuHFpdZ4boAvM2XoZ3MPRhdG2uGQW++5MajODM/U8MPkaNHRA==
+oclif@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-4.5.2.tgz#b90f9bb624fccb73e57dd733e3a5146f3eeb7599"
+  integrity sha512-9xUwaaNvdrN1tSx/jxKD1tsu/sR3ZHFv1f72S8GAZ01xmp5EGyRw97xUT64TFLPQLp/6h3zXm3VUwhZyCv9bkw==
   dependencies:
     "@aws-sdk/client-cloudfront" "^3.525.0"
     "@aws-sdk/client-s3" "^3.515.0"
-    "@oclif/core" "^3.19.2"
+    "@oclif/core" "^3.21.0"
     "@oclif/plugin-help" "^6.0.14"
     "@oclif/plugin-not-found" "^3.0.10"
     "@oclif/plugin-warn-if-update-available" "^3.0.12"
@@ -7973,6 +7974,7 @@ oclif@^4.4.21:
     normalize-package-data "^3.0.3"
     semver "^7.6.0"
     sort-package-json "^2.8.0"
+    validate-npm-package-name "^5.0.0"
     yeoman-environment "^3.15.1"
     yeoman-generator "^5.8.0"
 
