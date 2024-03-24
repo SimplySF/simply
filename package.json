@@ -68,7 +68,7 @@
     "@simplysf/simply-package": "1.1.5"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.1.1",
+    "@oclif/plugin-command-snapshot": "^5.1.2",
     "@salesforce/plugin-command-reference": "^3.0.70",
     "@salesforce/ts-sinon": "^1.4.19",
     "@simplysf/dev-scripts": "^2.1.2",
