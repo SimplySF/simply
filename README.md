@@ -26,8 +26,8 @@ Upload a file to a Salesforce org.
 
 ```
 USAGE
-  $ sf simply data file upload --file-path <value> -o <value> [--json] [--api-version <value>] [--first-publish-location-id
-    <value>] [--title <value>]
+  $ sf simply data file upload --file-path <value> -o <value> [--json] [--flags-dir <value>] [--api-version <value>]
+    [--first-publish-location-id <value>] [--title <value>]
 
 FLAGS
   -o, --target-org=<value>                 (required) Username or alias of the target org. Not required if the
@@ -38,7 +38,8 @@ FLAGS
       --title=<value>                      Specify the title for the file being uploaded.
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Upload a file to a Salesforce org.
@@ -51,7 +52,7 @@ EXAMPLES
   $ sf simply data file upload --file-path fileToUpload.txt --first-publish-location-id 0019000000DmehK --target-org myTargetOrg
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.8/src/commands/simply/data/file/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.0/src/commands/simply/data/file/upload.ts)_
 
 ## `sf simply data files upload`
 
@@ -59,8 +60,8 @@ Upload files to a Salesforce org.
 
 ```
 USAGE
-  $ sf simply data files upload --file-path <value> -o <value> [--json] [--api-version <value>] [--max-parallel-jobs
-  <value>]
+  $ sf simply data files upload --file-path <value> -o <value> [--json] [--flags-dir <value>] [--api-version <value>]
+    [--max-parallel-jobs <value>]
 
 FLAGS
   -o, --target-org=<value>         (required) Username or alias of the target org. Not required if the `target-org`
@@ -70,7 +71,8 @@ FLAGS
       --max-parallel-jobs=<value>  [default: 1] Maximum number of parallel jobs.
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Upload files to a Salesforce org.
@@ -95,7 +97,7 @@ FLAG DESCRIPTIONS
     quasi concurrent uploads. Please note that setting this value too high can cause performance issues.
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.1.8/src/commands/simply/data/files/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.0/src/commands/simply/data/files/upload.ts)_
 
 ## `sf simply package dependencies install`
 
@@ -103,16 +105,16 @@ Install package dependencies for a Salesforce project.
 
 ```
 USAGE
-  $ sf simply package dependencies install -o <value> [--json] [-a all|package] [--api-version <value>] [-z <value>] [-i All|Delta] [-k
-    <value>] [-r] [-b <value>] [-s AllUsers|AdminsOnly] [-v <value>] [-t DeprecateOnly|Mixed|Delete] [-w <value>]
+  $ sf simply package dependencies install -o <value> [--json] [--flags-dir <value>] [-a all|package] [--api-version <value>] [-z
+    <value>] [-i All|Delta] [-k <value>] [-r] [-b <value>] [-s AllUsers|AdminsOnly] [-v <value>] [-t
+    DeprecateOnly|Mixed|Delete] [-w <value>]
 
 FLAGS
   -a, --apex-compile=<option>        Compile all Apex in the org and package, or only Apex in the package; unlocked
                                      packages only.
                                      <options: all|package>
-  -b, --publish-wait=<value>         [default: [object Object]] Maximum number of minutes to wait for the Subscriber
-                                     Package Version ID to become available in the target org before canceling the
-                                     install request.
+  -b, --publish-wait=<value>         Maximum number of minutes to wait for the Subscriber Package Version ID to become
+                                     available in the target org before canceling the install request.
   -i, --install-type=<option>        [default: Delta] Install all packages or only deltas.
                                      <options: All|Delta>
   -k, --installation-key=<value>...  Installation key for key-protected packages
@@ -127,12 +129,13 @@ FLAGS
                                      unlocked packages.
                                      <options: DeprecateOnly|Mixed|Delete>
   -v, --target-dev-hub=<value>       Username or alias of the Dev Hub org.
-  -w, --wait=<value>                 [default: [object Object]] Number of minutes to wait for installation status.
+  -w, --wait=<value>                 Number of minutes to wait for installation status.
   -z, --branch=<value>               Package branch to consider when specifiying a Package/VersionNumber combination
       --api-version=<value>          Override the api version used for api requests made by this command
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Install package dependencies for a Salesforce project.
@@ -190,7 +193,7 @@ FLAG DESCRIPTIONS
     from by entering the branch build name. If not specified, the builds from NULL branch will be considered.
 ```
 
-_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.1.5/src/commands/simply/package/dependencies/install.ts)_
+_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.0/src/commands/simply/package/dependencies/install.ts)_
 
 ## `sf simply package version cleanup`
 
@@ -198,7 +201,8 @@ Cleanup package versions.
 
 ```
 USAGE
-  $ sf simply package version cleanup -s <value> -p <value> -v <value> [--json] [--api-version <value>]
+  $ sf simply package version cleanup -s <value> -p <value> -v <value> [--json] [--flags-dir <value>] [--api-version
+  <value>]
 
 FLAGS
   -p, --package=<value>         (required) Package Id
@@ -208,7 +212,8 @@ FLAGS
       --api-version=<value>     Override the api version used for api requests made by this command
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
 
 DESCRIPTION
   Cleanup package versions.
@@ -229,5 +234,5 @@ FLAG DESCRIPTIONS
     The MAJOR.MINOR.PATCH matcher that should be used to find package versions to delete.
 ```
 
-_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.1.5/src/commands/simply/package/version/cleanup.ts)_
+_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.0/src/commands/simply/package/version/cleanup.ts)_
 <!-- commandsstop -->
