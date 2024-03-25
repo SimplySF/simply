@@ -1,3 +1,12 @@
+# [1.3.0](/compare/1.2.1...1.3.0) (2024-03-25)
+
+
+### Features
+
+* upgrade data and package fac18c1
+
+
+
 ## [1.2.1](/compare/1.2.0...1.2.1) (2024-03-13)
 
 
