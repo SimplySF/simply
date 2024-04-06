@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "debug": "^4.3.4",
-    "@simplysf/simply-data": "1.2.0",
+    "@simplysf/simply-data": "1.2.1",
     "@simplysf/simply-package": "1.2.0"
   },
   "devDependencies": {
