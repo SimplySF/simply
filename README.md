@@ -52,7 +52,7 @@ EXAMPLES
   $ sf simply data file upload --file-path fileToUpload.txt --first-publish-location-id 0019000000DmehK --target-org myTargetOrg
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.0/src/commands/simply/data/file/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.1/src/commands/simply/data/file/upload.ts)_
 
 ## `sf simply data files upload`
 
@@ -97,7 +97,7 @@ FLAG DESCRIPTIONS
     quasi concurrent uploads. Please note that setting this value too high can cause performance issues.
 ```
 
-_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.0/src/commands/simply/data/files/upload.ts)_
+_See code: [@simplysf/simply-data](https://github.com/SimplySF/simply-data/blob/1.2.1/src/commands/simply/data/files/upload.ts)_
 
 ## `sf simply package dependencies install`
 
@@ -193,7 +193,7 @@ FLAG DESCRIPTIONS
     from by entering the branch build name. If not specified, the builds from NULL branch will be considered.
 ```
 
-_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.0/src/commands/simply/package/dependencies/install.ts)_
+_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.4/src/commands/simply/package/dependencies/install.ts)_
 
 ## `sf simply package version cleanup`
 
@@ -234,5 +234,5 @@ FLAG DESCRIPTIONS
     The MAJOR.MINOR.PATCH matcher that should be used to find package versions to delete.
 ```
 
-_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.0/src/commands/simply/package/version/cleanup.ts)_
+_See code: [@simplysf/simply-package](https://github.com/SimplySF/simply-package/blob/1.2.4/src/commands/simply/package/version/cleanup.ts)_
 <!-- commandsstop -->

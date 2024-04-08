@@ -1,3 +1,12 @@
+## [1.3.2](/compare/1.3.1...1.3.2) (2024-04-08)
+
+
+### Bug Fixes
+
+* **deps:** bump @simplysf/simply-package from 1.2.0 to 1.2.4 f09ade9
+
+
+
 ## [1.3.1](/compare/1.3.0...1.3.1) (2024-04-08)
 
 
