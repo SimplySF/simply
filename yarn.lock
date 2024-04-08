@@ -1562,14 +1562,14 @@
     typescript "^4.9.5"
     wireit "^0.14.4"
 
-"@simplysf/simply-data@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@simplysf/simply-data/-/simply-data-1.2.0.tgz#14d7ce48c444de066be99aeba9b5b8647057ca5a"
-  integrity sha512-26XQqR16xvUVXQv5MqrqUZAGvBcZtl283mR5pD/s3Vx9Kq+qLEwYjsWf0CwCqtnvRzyraT5LfmDFq5XQQFkPJg==
+"@simplysf/simply-data@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@simplysf/simply-data/-/simply-data-1.2.1.tgz#c3714cd42f18822664e046f5c39c24c85c6d7150"
+  integrity sha512-D3iOedla57CGt8ORlep4AxBhgFlnk0NNkr8Svgy8kNhmSYwPE8TxsbFwfB6+vhsK9MVM6L8rftS1+VpbE2ACBg==
   dependencies:
     "@oclif/core" "^3.25.0"
     "@salesforce/core" "^6.7.0"
-    "@salesforce/kit" "^3.0.15"
+    "@salesforce/kit" "^3.1.0"
     "@salesforce/sf-plugins-core" "^8.0.0"
     csv-parse "^5.5.5"
     csv-writer "^1.6.0"
