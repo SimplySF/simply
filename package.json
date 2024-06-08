@@ -73,7 +73,7 @@
     "@salesforce/ts-sinon": "^1.4.19",
     "@simplysf/dev-scripts": "^2.1.2",
     "@types/debug": "^4.1.12",
-    "oclif": "^4.7.6",
+    "oclif": "^4.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.4"
   },
