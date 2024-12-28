@@ -1,3 +1,12 @@
+# [1.5.0](https://example.com/compare/1.4.0...1.5.0) (2024-12-28)
+
+
+### Features
+
+* bump simply-data version ([7d1f841](https://example.com/commits/7d1f8416303301750650a41191a2d0a06e3f31d5))
+
+
+
 # [1.4.0](https://example.com/compare/1.3.2...1.4.0) (2024-12-27)
 
 
