@@ -65,7 +65,7 @@
   "dependencies": {
     "debug": "^4.4.3",
     "@simplysf/simply-data": "2.1.1",
-    "@simplysf/simply-package": "2.1.0"
+    "@simplysf/simply-package": "2.3.0"
   },
   "devDependencies": {
     "@oclif/plugin-command-snapshot": "^5.3.19",
