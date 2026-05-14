@@ -1,3 +1,12 @@
+# [2.1.0](https://example.com/compare/1.6.0...2.1.0) (2026-05-14)
+
+
+### Features
+
+* update plugin versions ([8cd5828](https://example.com/commits/8cd5828f9a52fae85ee9b1fd34c26a2deb5f815b))
+
+
+
 # [1.6.0](https://example.com/compare/1.5.0...1.6.0) (2025-01-06)
 
 
