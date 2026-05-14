@@ -1,15 +1,15 @@
 {
   "name": "@simplysf/simply",
   "description": "Salesforce CLI Plugins created by @SimplySF",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "author": "@ClayChipps",
   "homepage": "https://github.com/SimplySF/simply",
   "bugs": "https://github.com/SimplySF/simply/issues",
   "repository": "@ClayChipps/sf-chipps",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@1.22.22",
   "files": [
     "/lib",
     "/messages",
@@ -23,7 +23,7 @@
     "sf",
     "simply"
   ],
-  "license": "BSD-3-Clause",
+  "license": "Apache-2.0",
   "exports": "./dist/index.js",
   "type": "module",
   "types": "dist/index.d.ts",
@@ -63,19 +63,18 @@
     }
   },
   "dependencies": {
-    "debug": "^4.3.4",
-    "@simplysf/simply-data": "1.10.0",
-    "@simplysf/simply-package": "1.11.0"
+    "debug": "^4.4.3",
+    "@simplysf/simply-data": "2.1.1",
+    "@simplysf/simply-package": "2.1.0"
   },
   "devDependencies": {
-    "@oclif/plugin-command-snapshot": "^5.1.4",
-    "@salesforce/plugin-command-reference": "^3.0.74",
-    "@salesforce/ts-sinon": "^1.4.19",
-    "@simplysf/dev-scripts": "^2.1.2",
+    "@oclif/plugin-command-snapshot": "^5.3.19",
+    "@salesforce/plugin-command-reference": "^3.1.99",
+    "@salesforce/ts-sinon": "^1.4.34",
+    "@simplysf/dev-scripts": "^11.1.1",
     "@types/debug": "^4.1.12",
-    "oclif": "^4.7.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.4"
+    "oclif": "^4.23.0",
+    "ts-node": "^10.9.2"
   },
   "publishConfig": {
     "access": "public"
@@ -86,6 +85,7 @@
     "clean-all": "sf-clean all",
     "compile": "wireit",
     "docs": "sf-docs",
+    "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
     "format": "wireit",
     "link-check": "wireit",
     "lint": "wireit",
@@ -172,7 +172,7 @@
       "output": []
     },
     "link-check": {
-      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|%s\" --markdown --retry --directory-listing --verbosity error",
+      "command": "node -e \"process.exit(process.env.CI ? 0 : 1)\" || linkinator \"**/*.md\" --skip \"CHANGELOG.md|node_modules|test/|confluence.internal.salesforce.com|my.salesforce.com|localhost|%s\" --markdown --retry --directory-listing --verbosity error",
       "files": [
         "./*.md",
         "./!(CHANGELOG).md",
