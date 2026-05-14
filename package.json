@@ -5,7 +5,7 @@
   "author": "@ClayChipps",
   "homepage": "https://github.com/SimplySF/simply",
   "bugs": "https://github.com/SimplySF/simply/issues",
-  "repository": "@ClayChipps/sf-chipps",
+  "repository": "SimplySF/simply",
   "engines": {
     "node": ">=22.0.0"
   },
