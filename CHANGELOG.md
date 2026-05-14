@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/SimplySF/simply/compare/2.1.1...2.2.0) (2026-05-14)
+
+
+### Features
+
+* bump simply-package version ([d4599f8](https://github.com/SimplySF/simply/commit/d4599f85ee6c1ec634c0c9319f14ee0a2f7000d0))
+
+
+
 ## [2.1.1](https://github.com/SimplySF/simply/compare/2.1.0...2.1.1) (2026-05-14)
 
 
