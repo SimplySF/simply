@@ -11,22 +11,70 @@ on:
     inputs:
       prerelease:
         type: string
-        description: 'Name to use for the prerelease: beta, dev, etc. NOTE: If this is already set in the package.json, it does not need to be passed in here.'
+        description: 'Prerelease identifier: beta, dev, etc.'
 
 jobs:
   release:
-    uses: SimplySF/github-workflows/.github/workflows/create-github-release.yml@main
-    secrets: inherit
-    with:
-      prerelease: ${{ inputs.prerelease }}
-      # If this is a push event, we want to skip the release if there are no semantic commits
-      # However, if this is a manual release (workflow_dispatch), then we want to disable skip-on-empty
-      # This helps recover from forgetting to add semantic commits ('fix:', 'feat:', etc.)
-      skip-on-empty: ${{ github.event_name == 'push' }}
-  # docs:
-  #   # Most repos won't use this
-  #   # Depends on the 'release' job to avoid git collisions, not for any functionality reason
-  #   needs: release
-  #   secrets: inherit
-  #   if: ${{ github.ref_name == 'main' }}
-  #   uses: salesforcecli/github-workflows/.github/workflows/publishTypedoc.yml@main
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Get Github user info
+        id: github-user-info
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          USER_INFO=$(gh api user)
+          USERNAME=$(echo "$USER_INFO" | jq -r '.login')
+          EMAIL=$(echo "$USER_INFO" | jq -r '.email')
+
+          if [[ -z "$EMAIL" || "$EMAIL" == 'null' ]]; then
+            ID=$(echo "$USER_INFO" | jq -r '.id')
+            EMAIL="$ID+$USERNAME@users.noreply.github.com"
+          fi
+
+          echo "username=$USERNAME" >> "$GITHUB_OUTPUT"
+          echo "email=$EMAIL" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "${{ steps.github-user-info.outputs.username }}"
+          git config user.email "${{ steps.github-user-info.outputs.email }}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - run: npm ci --ignore-scripts
+
+      - name: Lerna version (prerelease branch)
+        if: github.ref_name != 'main' || inputs.prerelease
+        run: |
+          npx lerna version \
+            --conventional-commits \
+            --conventional-prerelease \
+            --preid "${{ inputs.prerelease || 'dev' }}" \
+            --create-release github \
+            --yes
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Lerna version (release)
+        if: github.ref_name == 'main' && !inputs.prerelease
+        run: |
+          npx lerna version \
+            --conventional-commits \
+            --create-release github \
+            --yes
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

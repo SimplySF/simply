@@ -1,32 +1,40 @@
 name: publish
 on:
   release:
-    # both release and prereleases
+    # both releases and prereleases
     types: [published]
-  # support manual release in case something goes wrong and needs to be repeated or tested
+  # support manual publish in case something goes wrong
   workflow_dispatch:
     inputs:
       tag:
-        description: github tag that needs to publish
+        description: GitHub tag to publish (e.g. @simplysf/simply@2.2.1)
         type: string
         required: true
+
 permissions:
   id-token: write
   contents: read
+
 jobs:
-  getDistTag:
-    outputs:
-      tag: ${{ steps.distTag.outputs.tag }}
+  npm-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name || inputs.tag  }}
-      - uses: SimplySF/github-workflows/.github/actions/getPreReleaseTag@main
-        id: distTag
-  npm:
-    uses: SimplySF/github-workflows/.github/workflows/npmPublish.yml@main
-    needs: [getDistTag]
-    with:
-      githubTag: ${{ github.event.release.tag_name || inputs.tag }}
-    secrets: inherit
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci --ignore-scripts
+
+      - run: npm run build
+
+      - name: Publish packages with new git tags
+        run: npx lerna publish from-git --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
