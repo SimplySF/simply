@@ -36,5 +36,3 @@ jobs:
 
       - name: Publish packages with new git tags
         run: npx lerna publish from-git --yes
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
