@@ -1,8 +1,19 @@
-# SimplySF Monorepo
+# Contributing
 
-This repository is a Lerna monorepo containing three Salesforce CLI plugins.
+Thanks for your interest in contributing to Simply! This document covers the repo structure, how to get set up, and how to submit changes.
 
-## Packages
+1. Please read our [Code of Conduct](CODE_OF_CONDUCT.md).
+2. Create a new issue before starting significant work so we can keep track of what you're trying to add or fix, offer suggestions, and avoid duplicate effort.
+3. Fork this repository.
+4. [Set up your environment](#setup) and make sure you can build and test the affected package(s) locally.
+5. Create a topic branch in your fork.
+6. Make your change, following the [commit message format](#commit-messages) below.
+7. Write tests for your change. No pull request will be accepted without tests covering the change.
+8. Open a pull request against `main`. We'll review your code, suggest any needed changes, and merge it in.
+
+## Repository Structure
+
+This repository is a Lerna monorepo containing three Salesforce CLI plugins:
 
 | Package                                               | Description                                                  | Path                      |
 | ----------------------------------------------------- | ------------------------------------------------------------ | ------------------------- |
@@ -10,12 +21,38 @@ This repository is a Lerna monorepo containing three Salesforce CLI plugins.
 | [`@simplysf/simply-data`](packages/simply-data)       | File upload/download commands                                | `packages/simply-data`    |
 | [`@simplysf/simply-package`](packages/simply-package) | Package dependency management commands                       | `packages/simply-package` |
 
-## Tooling
+Tooling:
 
 - **Package manager:** npm workspaces
 - **Task orchestration:** Lerna v8 (independent versioning) + Wireit (per-package build caching)
 - **Language:** TypeScript (ESM)
 - **Node:** >=22.0.0
+
+## Setup
+
+```sh
+git clone git@github.com:SimplySF/simply.git
+cd simply
+npm install
+npm run build
+npm test
+```
+
+`npm install` at the root installs and links all three packages and sets up git hooks automatically via husky.
+
+To try your changes with the Salesforce CLI, run a plugin's local dev binary from inside its package directory:
+
+```sh
+cd packages/simply-data
+./bin/dev.cmd simply data file upload --file-path fileToUpload.txt --target-org myTargetOrg
+```
+
+or link the package so you can run it from anywhere:
+
+```sh
+sf plugins link .
+sf plugins
+```
 
 ## Common Commands
 
@@ -52,6 +89,26 @@ To add a root-level devDependency (e.g., a shared build tool):
 ```sh
 npm install <package> --save-dev
 ```
+
+## Commit Messages
+
+Commits must follow [Conventional Commits](https://www.conventionalcommits.org/) (enforced by commitlint on commit). This matters beyond style: Lerna uses your commit types during release to decide which packages get versioned and how their `CHANGELOG.md` is generated.
+
+```text
+feat: add support for X
+fix: correct handling of Y
+docs: update README
+chore: bump a dependency
+```
+
+If your change only affects one package, scope the commit to it, e.g. `feat(simply-data): add --max-parallel-jobs flag`.
+
+## Pull Requests
+
+- Keep pull requests focused on a single change where possible.
+- Make sure `npm run build` and `npm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
+- Aim for high test coverage on new code.
+- Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); `simply` and `simply-package` require running `npm run readme` manually in that package and committing the result.
 
 ## Versioning and Publishing
 
@@ -110,3 +167,7 @@ git push origin --tags
 | `pre-push`   | `npm run build && npm test`                             |
 
 Hooks are installed automatically on `npm install` via the `prepare: husky` script.
+
+## Reporting Issues
+
+Please report bugs or request features by [opening an issue](https://github.com/SimplySF/simply/issues) rather than submitting a PR without prior discussion for anything non-trivial.
