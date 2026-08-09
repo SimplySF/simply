@@ -114,29 +114,23 @@ If your change only affects one package, scope the commit to it, e.g. `feat(simp
 
 Versioning uses Lerna's independent mode — each package has its own version and can release separately.
 
-The `create-github-release` workflow runs on pushes to `main` and calls:
+The `release` workflow runs on pushes to `main` and, in a single step, bumps versions, updates each package's `CHANGELOG.md`, creates git tags in the format `@simplysf/simply@<version>`, pushes them, creates a GitHub release per changed package, and publishes each bumped package to npm:
 
 ```sh
-lerna version --conventional-commits --create-release github --yes
+lerna publish --conventional-commits --create-release github --yes
 ```
-
-This analyzes conventional commits per package, bumps versions, creates git tags in the format `@simplysf/simply@<version>`, updates each package's `CHANGELOG.md`, and creates a GitHub release per changed package.
-
-Publishing runs automatically when a GitHub release is published (`onRelease.yml`) via:
-
-```sh
-lerna publish from-git --yes
-```
-
-This publishes every package whose version tag points at the current commit.
 
 ### Prerelease
 
-Push to a `prerelease/**` branch (e.g., `prerelease/my-feature`) to trigger a prerelease:
+Push to a `prerelease/**` branch (e.g., `prerelease/my-feature`) to trigger a prerelease, versioned and published the same way:
 
 ```sh
-lerna version --conventional-commits --conventional-prerelease --preid dev --create-release github --yes
+lerna publish --conventional-commits --conventional-prerelease --preid dev --create-release github --yes
 ```
+
+### Recovering a Failed Publish
+
+If a version was tagged and released but npm publish failed for one or more packages (e.g. a registry outage), trigger the `release` workflow manually (`workflow_dispatch`) with the `prerelease` input left blank. This runs `lerna publish from-package --yes`, which compares each package's committed version against what's actually on npm and publishes anything missing, without bumping versions again.
 
 ### First Release After Migration
 
@@ -151,12 +145,10 @@ git push origin --tags
 
 ## CI
 
-| Workflow                    | Trigger                           | What it does                                                                   |
-| --------------------------- | --------------------------------- | ------------------------------------------------------------------------------ |
-| `test.yml`                  | Push to non-main branches         | Runs `npm run build` + `npm test` on Linux (lts/_, lts/-1) and Windows (lts/_) |
-| `create-github-release.yml` | Push to `main` or `prerelease/**` | Runs `lerna version` to bump versions and create GitHub releases               |
-| `onRelease.yml`             | GitHub release published          | Runs `lerna publish from-git` to publish changed packages to npm               |
-| `devScripts.yml`            | Weekly / manual                   | Updates `@simplysf/dev-scripts` across packages                                |
+| Workflow      | Trigger                                               | What it does                                                                                                                                                                          |
+| ------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `test.yml`    | Push to non-main branches                             | Runs `npm run build` + `npm test` on Linux (lts/_, lts/-1) and Windows (lts/_)                                                                                                        |
+| `release.yml` | Push to `main` or `prerelease/**`, or manual dispatch | Runs `npm run build` + `npm test`, then bumps versions, tags, creates GitHub releases, and publishes to npm in one step (see [Versioning and Publishing](#versioning-and-publishing)) |
 
 ## Git Hooks
 
