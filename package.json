@@ -11,7 +11,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "^22.13.0 || ^24.0.0 || ^26.0.0"
   },
   "workspaces": [
     "packages/*"
@@ -37,7 +37,7 @@
     "eslint-config-salesforce-typescript": "^4.0.1",
     "eslint-plugin-header": "^3.1.1",
     "husky": "^9.1.7",
-    "lerna": "^8.1.9",
+    "lerna": "^10.0.0",
     "lint-staged": "^15.5.0",
     "linkinator": "^6.3.0",
     "mocha": "^10.8.2",

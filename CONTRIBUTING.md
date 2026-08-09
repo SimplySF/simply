@@ -24,9 +24,9 @@ This repository is a Lerna monorepo containing three Salesforce CLI plugins:
 Tooling:
 
 - **Package manager:** npm workspaces
-- **Task orchestration:** Lerna v8 (independent versioning) + Wireit (per-package build caching)
+- **Task orchestration:** Lerna v10 (independent versioning) + Wireit (per-package build caching)
 - **Language:** TypeScript (ESM)
-- **Node:** >=22.0.0
+- **Node:** >=22.13.0 (required by Lerna 10; the published CLI plugins themselves only require >=22.0.0)
 
 ## Setup
 
