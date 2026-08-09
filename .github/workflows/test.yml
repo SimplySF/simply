@@ -5,11 +5,56 @@ on:
   workflow_dispatch:
 
 jobs:
-  yarn-lockfile-check:
-    uses: SimplySF/github-workflows/.github/workflows/lockFileCheck.yml@main
   linux-unit-tests:
-    needs: yarn-lockfile-check
-    uses: SimplySF/github-workflows/.github/workflows/unitTestsLinux.yml@main
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['lts/*', 'lts/-1']
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: npm
+
+      - uses: google/wireit@setup-github-actions-caching/v2
+        continue-on-error: true
+
+      - run: npm ci --ignore-scripts
+
+      - run: npm run build
+
+      - name: npm test
+        run: npm test
+        env:
+          SF_DISABLE_TELEMETRY: true
+
   windows-unit-tests:
-    needs: yarn-lockfile-check
-    uses: SimplySF/github-workflows/.github/workflows/unitTestsWindows.yml@main
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node_version: ['lts/*']
+      fail-fast: false
+    steps:
+      - run: git config --system core.longpaths true
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: npm
+
+      - uses: google/wireit@setup-github-actions-caching/v2
+        continue-on-error: true
+
+      - run: npm ci --ignore-scripts
+
+      - run: npm run build
+
+      - name: npm test
+        run: npm test
+        env:
+          SF_DISABLE_TELEMETRY: true
