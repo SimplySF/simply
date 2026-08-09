@@ -6,7 +6,7 @@ on:
       - main
       - prerelease/**
     tags-ignore:
-      - '*'
+      - '**'
   workflow_dispatch:
     inputs:
       prerelease:
