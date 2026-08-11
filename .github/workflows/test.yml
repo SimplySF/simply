@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node_version }}
           cache: npm
@@ -28,21 +28,19 @@ jobs:
 
       - name: npm test
         run: npm test
-        env:
-          SF_DISABLE_TELEMETRY: true
 
   windows-unit-tests:
     runs-on: windows-latest
     strategy:
       matrix:
-        node_version: ['lts/*']
+        node_version: ['lts/*', 'lts/-1']
       fail-fast: false
     steps:
       - run: git config --system core.longpaths true
 
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node_version }}
           cache: npm
@@ -56,5 +54,3 @@ jobs:
 
       - name: npm test
         run: npm test
-        env:
-          SF_DISABLE_TELEMETRY: true
