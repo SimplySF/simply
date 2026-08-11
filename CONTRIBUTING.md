@@ -109,6 +109,7 @@ If your change only affects one package, scope the commit to it, e.g. `feat(simp
 - Make sure `npm run build` and `npm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
 - Aim for high test coverage on new code.
 - Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); `simply` and `simply-package` require running `npm run readme` manually in that package and committing the result.
+- `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `npm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `npm run build`, so a stale, uncommitted snapshot fails the build.
 
 ## Versioning and Publishing
 

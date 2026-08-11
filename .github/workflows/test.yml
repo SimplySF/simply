@@ -52,5 +52,8 @@ jobs:
 
       - run: npm run build
 
+      - name: Verify command snapshots are committed
+        run: git diff --exit-code -- "**/command-snapshot.json"
+
       - name: npm test
         run: npm test
