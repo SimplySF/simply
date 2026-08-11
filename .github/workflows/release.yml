@@ -43,7 +43,7 @@ jobs:
           cache: npm
           registry-url: 'https://registry.npmjs.org'
 
-        run: npm install npm --global
+      - run: npm install npm --global
 
       - run: npm ci --ignore-scripts
 
