@@ -16,7 +16,10 @@
 
 export {
   SkipFirstLineTransform,
+  streamBulkQuery,
   streamBulkQueryToFile,
+  type StreamBulkQueryOptions,
+  type StreamBulkQueryResult,
   type StreamBulkQueryToFileOptions,
   type StreamBulkQueryToFileResult,
-} from './bulk/streamBulkQueryToFile.js';
+} from './bulk/streamBulkQuery.js';

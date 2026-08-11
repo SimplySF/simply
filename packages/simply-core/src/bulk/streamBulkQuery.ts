@@ -22,13 +22,28 @@ import { Connection, SfError } from '@salesforce/core';
 import { Duration } from '@salesforce/kit';
 import { fetch } from 'undici';
 
-export type StreamBulkQueryToFileOptions = {
+export type StreamBulkQueryOptions = {
   /** Query all records, including archived/deleted ones. Defaults to `false`. */
   scanAll?: boolean;
   /** How often to poll the query job for completion, in milliseconds. Defaults to 5 seconds. */
   pollInterval?: number;
   /** How long to wait for the query job to complete before giving up, in milliseconds. Defaults to 30 minutes. */
   pollTimeout?: number;
+};
+
+/** @deprecated Use {@link StreamBulkQueryOptions} instead. */
+export type StreamBulkQueryToFileOptions = StreamBulkQueryOptions;
+
+export type StreamBulkQueryResult = {
+  jobId: string;
+  numberRecordsProcessed: number;
+  /**
+   * The merged CSV result stream, spanning every result page with duplicate header rows
+   * stripped. Consume it directly (e.g. pipe it through a CSV parser) or pass it to
+   * `stream.pipeline()`/`fs.createWriteStream()` yourself. See {@link streamBulkQueryToFile}
+   * for a ready-made "write straight to a file" convenience wrapper.
+   */
+  stream: Readable;
 };
 
 export type StreamBulkQueryToFileResult = {
@@ -114,19 +129,44 @@ async function fetchResultPage(conn: Connection, path: string): Promise<{ stream
 }
 
 /**
- * Run a SOQL query through Bulk API v2 and stream the CSV results directly to a file.
+ * Lazily walk every Bulk API v2 result page for a job, yielding raw CSV bytes. Header rows on
+ * pages after the first are stripped so the combined output reads as a single well-formed CSV.
+ *
+ * Pages can't be fetched in parallel: each page's locator (needed to request the next one) only
+ * arrives in that page's response headers.
+ */
+async function* iterateResultChunks(conn: Connection, resultsPath: string): AsyncGenerator<Buffer> {
+  let locator: string | undefined;
+  let firstPage = true;
+
+  while (locator !== 'null') {
+    const page = await fetchResultPage(conn, locator ? `${resultsPath}?locator=${locator}` : resultsPath); // eslint-disable-line no-await-in-loop
+    const source: AsyncIterable<Buffer> = firstPage ? page.stream : page.stream.pipe(new SkipFirstLineTransform());
+
+    // eslint-disable-next-line no-await-in-loop
+    for await (const chunk of source) {
+      yield chunk;
+    }
+
+    firstPage = false;
+    locator = page.locator ?? 'null';
+  }
+}
+
+/**
+ * Run a SOQL query through Bulk API v2 and return the merged CSV results as a single stream.
  *
  * Unlike `Connection.bulk2.query()`, which routes result pages through jsforce's HTTP transport
- * (buffering each page fully into memory before it can be consumed), this streams each page's
- * HTTP response straight to disk via `stream.pipeline()`, so memory usage stays flat regardless
- * of result set size.
+ * (buffering each page fully into memory before it can be consumed), this fetches each page's
+ * HTTP response directly and exposes it as one continuous, backpressure-respecting `Readable`,
+ * so memory usage stays flat regardless of result set size. Pages are fetched lazily, one at a
+ * time, only as the returned stream is consumed.
  */
-export async function streamBulkQueryToFile(
+export async function streamBulkQuery(
   conn: Connection,
   soql: string,
-  outputPath: string,
-  options: StreamBulkQueryToFileOptions = {},
-): Promise<StreamBulkQueryToFileResult> {
+  options: StreamBulkQueryOptions = {},
+): Promise<StreamBulkQueryResult> {
   const queryJob = new QueryJobV2(conn, {
     bodyParams: {
       query: soql,
@@ -152,22 +192,29 @@ export async function streamBulkQueryToFile(
 
   const resultsPath = `/jobs/query/${jobInfo.id}/results`;
 
-  let locator: string | undefined;
-  let firstPage = true;
+  return {
+    jobId: jobInfo.id,
+    numberRecordsProcessed: jobInfo.numberRecordsProcessed,
+    stream: Readable.from(iterateResultChunks(conn, resultsPath)),
+  };
+}
 
-  while (locator !== 'null') {
-    const page = await fetchResultPage(conn, locator ? `${resultsPath}?locator=${locator}` : resultsPath); // eslint-disable-line no-await-in-loop
+/**
+ * Run a SOQL query through Bulk API v2 and stream the CSV results directly to a file.
+ *
+ * A thin convenience wrapper around {@link streamBulkQuery} for the common "just write it to
+ * disk" case. Use {@link streamBulkQuery} directly if you want to consume or transform the
+ * results without touching the filesystem (e.g. piping through a CSV parser).
+ */
+export async function streamBulkQueryToFile(
+  conn: Connection,
+  soql: string,
+  outputPath: string,
+  options: StreamBulkQueryOptions = {},
+): Promise<StreamBulkQueryToFileResult> {
+  const { jobId, numberRecordsProcessed, stream } = await streamBulkQuery(conn, soql, options);
 
-    await pipeline(
-      // eslint-disable-line no-await-in-loop
-      firstPage
-        ? [page.stream, fs.createWriteStream(outputPath)]
-        : [page.stream, new SkipFirstLineTransform(), fs.createWriteStream(outputPath, { flags: 'a' })],
-    );
+  await pipeline(stream, fs.createWriteStream(outputPath));
 
-    firstPage = false;
-    locator = page.locator ?? 'null';
-  }
-
-  return { jobId: jobInfo.id, numberRecordsProcessed: jobInfo.numberRecordsProcessed };
+  return { jobId, numberRecordsProcessed };
 }

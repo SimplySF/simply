@@ -23,7 +23,7 @@ import { Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Response } from 'undici';
-import { SkipFirstLineTransform, streamBulkQueryToFile } from '../../src/bulk/streamBulkQueryToFile.js';
+import { SkipFirstLineTransform, streamBulkQuery, streamBulkQueryToFile } from '../../src/bulk/streamBulkQuery.js';
 
 vi.mock('undici', async () => {
   const actual = await vi.importActual<typeof import('undici')>('undici');
@@ -63,6 +63,53 @@ describe('SkipFirstLineTransform', () => {
     await new Promise((resolve) => transform.on('end', resolve));
 
     expect(Buffer.concat(chunks).toString()).to.equal('001,Foo\n');
+  });
+});
+
+describe('streamBulkQuery', () => {
+  const $$ = new TestContext();
+  const testOrg = new MockTestOrgData();
+
+  beforeAll(async () => {
+    await $$.stubAuths(testOrg);
+  });
+
+  afterEach(() => {
+    $$.restore();
+    vi.mocked(mockFetch).mockReset();
+  });
+
+  it('returns job metadata immediately and exposes results as a single merged stream', async () => {
+    const connection = await testOrg.getConnection();
+
+    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+      this.emit('jobComplete', fakeJobInfo({ numberRecordsProcessed: 4 }));
+    });
+
+    vi.mocked(mockFetch)
+      .mockResolvedValueOnce(
+        new Response('Id,Name\n001,Foo\n002,Bar\n', { status: 200, headers: { 'sforce-locator': 'page-2' } }),
+      )
+      .mockResolvedValueOnce(
+        new Response('Id,Name\n003,Baz\n004,Qux\n', { status: 200, headers: { 'sforce-locator': 'null' } }),
+      );
+
+    const result = await streamBulkQuery(connection, 'SELECT Id, Name FROM Account');
+
+    // Job metadata (from polling) is available before the result stream is ever read.
+    expect(result.jobId).to.equal('750xx0000000001AAA');
+    expect(result.numberRecordsProcessed).to.equal(4);
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of result.stream as AsyncIterable<Buffer>) {
+      chunks.push(chunk);
+    }
+
+    expect(Buffer.concat(chunks).toString()).to.equal('Id,Name\n001,Foo\n002,Bar\n003,Baz\n004,Qux\n');
+    expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 });
 
