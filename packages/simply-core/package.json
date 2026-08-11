@@ -1,0 +1,122 @@
+{
+  "name": "@simplysf/simply-core",
+  "description": "Shared internal utilities for SimplySF Salesforce CLI plugins",
+  "version": "1.0.0",
+  "author": "@ClayChipps",
+  "homepage": "https://github.com/SimplySF/simply",
+  "bugs": "https://github.com/SimplySF/simply/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimplySF/simply",
+    "directory": "packages/simply-core"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "files": [
+    "/lib"
+  ],
+  "keywords": [
+    "force",
+    "salesforce",
+    "sfdx",
+    "salesforcedx",
+    "sfdx-plugin",
+    "sf-plugin",
+    "sf"
+  ],
+  "license": "Apache-2.0",
+  "exports": "./lib/index.js",
+  "type": "module",
+  "dependencies": {
+    "@jsforce/jsforce-node": "^3.10.17",
+    "@salesforce/core": "^8.30.0",
+    "@salesforce/kit": "^3.2.6",
+    "undici": "^8.10.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "vitest": "^4.1.10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "wireit",
+    "compile": "wireit",
+    "fix-license": "eslint src test --fix --rule \"header/header: [2]\"",
+    "format": "wireit",
+    "lint": "wireit",
+    "test": "wireit",
+    "test:coverage": "vitest run --coverage",
+    "test:only": "wireit",
+    "test:watch": "vitest watch"
+  },
+  "wireit": {
+    "build": {
+      "dependencies": [
+        "compile",
+        "lint"
+      ]
+    },
+    "compile": {
+      "command": "tsc -p . --pretty --incremental",
+      "files": [
+        "src/**/*.ts",
+        "**/tsconfig.json"
+      ],
+      "output": [
+        "lib/**",
+        "*.tsbuildinfo"
+      ],
+      "clean": "if-file-deleted"
+    },
+    "format": {
+      "command": "prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        ".prettier*"
+      ],
+      "output": []
+    },
+    "lint": {
+      "command": "eslint src test --color --cache --cache-location .eslintcache",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "**/.eslint*",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test": {
+      "dependencies": [
+        "test:compile",
+        "test:only",
+        "lint"
+      ]
+    },
+    "test:compile": {
+      "command": "tsc -p \"./test\" --pretty",
+      "files": [
+        "test/**/*.ts",
+        "**/tsconfig.json"
+      ],
+      "output": []
+    },
+    "test:only": {
+      "command": "vitest run",
+      "env": {
+        "FORCE_COLOR": "2"
+      },
+      "files": [
+        "test/**/*.ts",
+        "src/**/*.ts",
+        "**/tsconfig.json",
+        "vitest.config.ts"
+      ],
+      "output": []
+    }
+  }
+}
