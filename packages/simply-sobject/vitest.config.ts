@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
-import { describe, it } from 'vitest';
+import { defineConfig } from 'vitest/config';
 
-describe('simply-project', () => {
-  it.todo('add test coverage for simply-project');
+export default defineConfig({
+  test: {
+    // @salesforce/core/testSetup registers its stub/restore hooks against the
+    // global beforeEach/afterEach, so vitest must expose test globals at runtime.
+    globals: true,
+    environment: 'node',
+    include: ['test/**/*.test.ts'],
+    testTimeout: 10_000,
+    coverage: {
+      provider: 'v8',
+      reporter: ['lcov', 'text'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.d.ts'],
+    },
+  },
 });
