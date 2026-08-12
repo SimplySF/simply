@@ -40,15 +40,6 @@ function fakeJobInfo(overrides: Partial<QueryJobInfoV2> = {}): QueryJobInfoV2 {
   } as QueryJobInfoV2;
 }
 
-// @salesforce/core's TestContext exposes a sinon sandbox (SANDBOX) for stubbing external
-// methods during tests. This local type mirrors just the stub API surface used here, so tests
-// don't need to resolve sinon's own type declarations directly.
-type Stub = {
-  callsFake: (fn: (...args: never[]) => unknown) => Stub;
-  resolves: (value?: unknown) => Stub;
-};
-type Sandbox = { stub: (target: object, method: string) => Stub };
-
 describe('SkipFirstLineTransform', () => {
   it('strips a header line delivered in a single chunk', async () => {
     const transform = new SkipFirstLineTransform();
@@ -77,7 +68,6 @@ describe('SkipFirstLineTransform', () => {
 
 describe('streamBulkQuery', () => {
   const $$ = new TestContext();
-  const sandbox = $$.SANDBOX as unknown as Sandbox;
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {
@@ -92,9 +82,9 @@ describe('streamBulkQuery', () => {
   it('returns job metadata immediately and exposes results as a single merged stream', async () => {
     const connection = await testOrg.getConnection();
 
-    sandbox.stub(Connection.prototype, 'refreshAuth').resolves();
-    sandbox.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
-    sandbox.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
       this.emit('jobComplete', fakeJobInfo({ numberRecordsProcessed: 4 }));
     });
 
@@ -125,7 +115,6 @@ describe('streamBulkQuery', () => {
 
 describe('streamBulkQueryToFile', () => {
   const $$ = new TestContext();
-  const sandbox = $$.SANDBOX as unknown as Sandbox;
   const testOrg = new MockTestOrgData();
   let outputPath: string;
 
@@ -145,9 +134,9 @@ describe('streamBulkQueryToFile', () => {
     const connection = await testOrg.getConnection();
     outputPath = path.join(os.tmpdir(), `simply-core-bulk-test-${Date.now()}.csv`);
 
-    sandbox.stub(Connection.prototype, 'refreshAuth').resolves();
-    sandbox.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
-    sandbox.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
       this.emit('jobComplete', fakeJobInfo());
     });
 
@@ -166,9 +155,9 @@ describe('streamBulkQueryToFile', () => {
     const connection = await testOrg.getConnection();
     outputPath = path.join(os.tmpdir(), `simply-core-bulk-test-${Date.now()}.csv`);
 
-    sandbox.stub(Connection.prototype, 'refreshAuth').resolves();
-    sandbox.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
-    sandbox.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
       this.emit('jobComplete', fakeJobInfo({ numberRecordsProcessed: 4 }));
     });
 
@@ -190,8 +179,8 @@ describe('streamBulkQueryToFile', () => {
   it('throws when the query job never reports completion', async () => {
     const connection = await testOrg.getConnection();
 
-    sandbox.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
-    sandbox.stub(QueryJobV2.prototype, 'poll').resolves();
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves(fakeJobInfo());
+    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').resolves();
 
     await expect(streamBulkQueryToFile(connection, 'SELECT Id FROM Account', 'unused.csv')).rejects.toThrow(
       'Bulk query job did not report completion after polling.',

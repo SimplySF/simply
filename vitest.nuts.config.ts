@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // Each package's `test:only` wireit task runs `vitest run` with its own directory as the
+  // working directory, but the `projects` glob below must always resolve relative to the repo
+  // root regardless of where vitest was invoked from.
+  root: fileURLToPath(new URL('.', import.meta.url)),
   test: {
     environment: 'node',
     include: ['test/**/*.nut.ts'],
     projects: ['packages/*'],
+    setupFiles: [fileURLToPath(new URL('./vitest.setup.ts', import.meta.url))],
     // NUTs create real scratch orgs and run commands against them, so they
     // need much longer allowances than the unit test config.
     testTimeout: 1_200_000,

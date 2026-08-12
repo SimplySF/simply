@@ -14,17 +14,41 @@
  * limitations under the License.
  */
 
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
+const packagesDir = fileURLToPath(new URL('./packages/', import.meta.url));
+const setupFile = fileURLToPath(new URL('./vitest.setup.ts', import.meta.url));
+
+// Vitest's `projects` glob only inherits the parent `test` config for directories that have
+// their own vitest config file; bare directories (all of ours) get nothing but CLI-flag
+// overrides. Building explicit project entries here — one per package — makes each project
+// actually inherit `setupFiles`, `include`, `environment`, and `globals` below, and also makes
+// them resolve correctly regardless of which directory `vitest run` is invoked from (each
+// package's `test:only` wireit task runs it from that package's own directory).
+const packageProjects = fs
+  .readdirSync(packagesDir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => ({
+    test: {
+      name: entry.name,
+      root: fileURLToPath(new URL(`./packages/${entry.name}/`, import.meta.url)),
+      // @salesforce/core/testSetup registers its stub/restore hooks against the
+      // global beforeEach/afterEach, so vitest must expose test globals at runtime.
+      globals: true,
+      environment: 'node',
+      include: ['test/**/*.test.ts'],
+      setupFiles: [setupFile],
+      testTimeout: 10_000,
+    },
+  }));
+
 export default defineConfig({
+  root: rootDir,
   test: {
-    // @salesforce/core/testSetup registers its stub/restore hooks against the
-    // global beforeEach/afterEach, so vitest must expose test globals at runtime.
-    globals: true,
-    environment: 'node',
-    include: ['test/**/*.test.ts'],
-    projects: ['packages/*'],
-    testTimeout: 10_000,
+    projects: packageProjects,
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text'],
