@@ -34,8 +34,8 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-// Packages carrying the Apache-2.0 header (all published plugins except the legacy "simply" umbrella package).
-const apacheHeaderPackages = [
+// All published packages; every one carries the same Apache-2.0 header.
+const allPackages = [
   'packages/simply',
   'packages/simply-apex',
   'packages/simply-core',
@@ -46,8 +46,6 @@ const apacheHeaderPackages = [
   'packages/simply-sobject',
 ];
 
-const allPackages = [...apacheHeaderPackages];
-
 // sf-plugin's recommended rules only ever applied to the oclif command packages, not simply-core or simply.
 const sfPluginPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-core' && pkg !== 'packages/simply');
 
@@ -55,7 +53,7 @@ const sfPluginPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-co
 const mochaTestPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-core');
 const nonMochaTestPackages = ['packages/simply-core'];
 
-const apacheHeaderRule = [
+const headerRule = [
   2,
   'block',
   [
@@ -256,9 +254,9 @@ export default [
   },
   ...scoped(sfPluginPackages, { extends: ['plugin:sf-plugin/recommended'] }),
   {
-    files: toSrcFiles(apacheHeaderPackages),
+    files: toSrcFiles(allPackages),
     plugins: { header: headerPlugin },
-    rules: { 'header/header': apacheHeaderRule },
+    rules: { 'header/header': headerRule },
   },
   ...scoped(mochaTestPackages, { env: { mocha: true }, rules: testOverrideRules }, toTestFiles(mochaTestPackages)),
   ...scoped(nonMochaTestPackages, { rules: testOverrideRules }, toTestFiles(nonMochaTestPackages)),
