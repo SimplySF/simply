@@ -1,1 +1,5 @@
-export default '@salesforce/prettier-config';
+export default {
+  singleQuote: true,
+  printWidth: 120,
+  endOfLine: 'auto',
+};
