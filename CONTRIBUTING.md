@@ -23,7 +23,7 @@ This repository is a Lerna monorepo containing three Salesforce CLI plugins:
 
 Tooling:
 
-- **Package manager:** npm workspaces
+- **Package manager:** pnpm workspaces
 - **Task orchestration:** Lerna v10 (independent versioning) + Wireit (per-package build caching)
 - **Language:** TypeScript (ESM)
 - **Node:** >=22.13.0 (required by Lerna 10; the published CLI plugins themselves only require >=22.0.0)
@@ -33,12 +33,12 @@ Tooling:
 ```sh
 git clone git@github.com:SimplySF/simply.git
 cd simply
-npm install
-npm run build
-npm test
+pnpm install
+pnpm run build
+pnpm test
 ```
 
-`npm install` at the root installs and links all three packages and sets up git hooks automatically via husky.
+`pnpm install` at the root installs and links all three packages and sets up git hooks automatically via husky.
 
 To try your changes with the Salesforce CLI, run a plugin's local dev binary from inside its package directory:
 
@@ -59,21 +59,21 @@ sf plugins
 Run from the repo root to target all packages:
 
 ```sh
-npm run build       # lerna run build (compile + lint)
-npm run compile     # lerna run compile
-npm run lint        # lerna run lint
-npm run test        # lerna run test
-npm run test:only   # lerna run test:only
-npm run format      # lerna run format
-npm run clean       # lerna run clean
+pnpm run build       # lerna run build (compile + lint)
+pnpm run compile     # lerna run compile
+pnpm run lint        # lerna run lint
+pnpm run test        # lerna run test
+pnpm run test:only   # lerna run test:only
+pnpm run format      # lerna run format
+pnpm run clean       # lerna run clean
 ```
 
 Run inside a single package directory to target just that package:
 
 ```sh
 cd packages/simply-data
-npm run build
-npm test
+pnpm run build
+pnpm test
 ```
 
 ## Adding a Dependency
@@ -81,13 +81,13 @@ npm test
 To add a dependency to a specific package:
 
 ```sh
-npm install <package> --workspace=packages/simply-data
+pnpm add <package> --filter @simplysf/simply-data
 ```
 
 To add a root-level devDependency (e.g., a shared build tool):
 
 ```sh
-npm install <package> --save-dev
+pnpm add -w -D <package>
 ```
 
 ## Commit Messages
@@ -106,10 +106,10 @@ If your change only affects one package, scope the commit to it, e.g. `feat(simp
 ## Pull Requests
 
 - Keep pull requests focused on a single change where possible.
-- Make sure `npm run build` and `npm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
+- Make sure `pnpm run build` and `pnpm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
 - Aim for high test coverage on new code.
-- Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); `simply` and `simply-package` require running `npm run readme` manually in that package and committing the result.
-- `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `npm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `npm run build`, so a stale, uncommitted snapshot fails the build.
+- Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); `simply` and `simply-package` require running `pnpm run readme` manually in that package and committing the result.
+- `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `pnpm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `pnpm run build`, so a stale, uncommitted snapshot fails the build.
 
 ## Versioning and Publishing
 
@@ -148,8 +148,8 @@ git push origin --tags
 
 | Workflow      | Trigger                                               | What it does                                                                                                                                                                          |
 | ------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test.yml`    | Push to non-main branches                             | Runs `npm run build` + `npm test` on Linux (lts/_, lts/-1) and Windows (lts/_)                                                                                                        |
-| `release.yml` | Push to `main` or `prerelease/**`, or manual dispatch | Runs `npm run build` + `npm test`, then bumps versions, tags, creates GitHub releases, and publishes to npm in one step (see [Versioning and Publishing](#versioning-and-publishing)) |
+| `test.yml`    | Push to non-main branches                             | Runs `pnpm run build` + `pnpm test` on Linux (lts/_, lts/-1) and Windows (lts/_)                                                                                                        |
+| `release.yml` | Push to `main` or `prerelease/**`, or manual dispatch | Runs `pnpm run build` + `pnpm test`, then bumps versions, tags, creates GitHub releases, and publishes to npm in one step (see [Versioning and Publishing](#versioning-and-publishing)) |
 
 ## Git Hooks
 
@@ -157,9 +157,9 @@ git push origin --tags
 | ------------ | ------------------------------------------------------- |
 | `pre-commit` | `lint-staged` — runs `prettier --write` on staged files |
 | `commit-msg` | `commitlint` — enforces conventional commit format      |
-| `pre-push`   | `npm run build && npm test`                             |
+| `pre-push`   | `pnpm run build && pnpm test`                             |
 
-Hooks are installed automatically on `npm install` via the `prepare: husky` script.
+Hooks are installed automatically on `pnpm install` via the `prepare: husky` script.
 
 ## Reporting Issues
 
