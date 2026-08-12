@@ -50,9 +50,9 @@
     "format": "wireit",
     "lint": "wireit",
     "test": "wireit",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --project simply-core",
     "test:only": "wireit",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch --project simply-core"
   },
   "wireit": {
     "build": {
@@ -112,7 +112,7 @@
       "output": []
     },
     "test:only": {
-      "command": "vitest run",
+      "command": "vitest run --project simply-core",
       "env": {
         "FORCE_COLOR": "2"
       },
