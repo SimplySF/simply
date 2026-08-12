@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { QueryJobV2, type QueryJobInfoV2 } from '@jsforce/jsforce-node/lib/api/bulk2.js';
+import { QueryJobV2 } from '@jsforce/jsforce-node/lib/api/bulk2.js';
 import type { Schema } from '@jsforce/jsforce-node';
 import { Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
@@ -37,8 +37,19 @@ async function collect<T>(gen: AsyncGenerator<T>): Promise<T[]> {
   return items;
 }
 
+// @salesforce/core's TestContext exposes a sinon sandbox (SANDBOX) for stubbing external
+// methods during tests. This local type mirrors just the stub API surface used here, so tests
+// don't need to resolve sinon's own type declarations directly.
+type Stub = {
+  callsFake: (fn: (...args: never[]) => unknown) => Stub;
+  firstCall: { args: unknown[] };
+  resolves: (value?: unknown) => Stub;
+};
+type Sandbox = { stub: (target: object, method: string) => Stub };
+
 describe('queryRecords', () => {
   const $$ = new TestContext();
+  const sandbox = $$.SANDBOX as unknown as Sandbox;
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {
@@ -53,12 +64,12 @@ describe('queryRecords', () => {
   it('uses the REST API and flattens relationship fields when the count is at or under the threshold', async () => {
     const connection = await testOrg.getConnection();
 
-    const queryStub = $$.SANDBOX.stub(Connection.prototype, 'query').resolves({
+    const queryStub = sandbox.stub(Connection.prototype, 'query').resolves({
       totalSize: 2000,
       done: true,
       records: [],
-    } as never);
-    $$.SANDBOX.stub(Connection.prototype, 'autoFetchQuery').resolves({
+    });
+    sandbox.stub(Connection.prototype, 'autoFetchQuery').resolves({
       totalSize: 1,
       done: true,
       records: [
@@ -69,7 +80,7 @@ describe('queryRecords', () => {
           Account: { Name: 'Acme' },
         },
       ],
-    } as never);
+    });
 
     const records = await collect(queryRecords(connection, 'SELECT Id, Name, Account.Name FROM Contact ORDER BY Name'));
 
@@ -80,11 +91,11 @@ describe('queryRecords', () => {
   it('uses Bulk API v2 when the count exceeds the threshold', async () => {
     const connection = await testOrg.getConnection();
 
-    $$.SANDBOX.stub(Connection.prototype, 'query').resolves({ totalSize: 2001, done: true, records: [] } as never);
-    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
-    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves({ id: '750xx', numberRecordsProcessed: 2001 } as never);
-    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
-      this.emit('jobComplete', { id: '750xx', numberRecordsProcessed: 2001 } as QueryJobInfoV2);
+    sandbox.stub(Connection.prototype, 'query').resolves({ totalSize: 2001, done: true, records: [] });
+    sandbox.stub(Connection.prototype, 'refreshAuth').resolves();
+    sandbox.stub(QueryJobV2.prototype, 'open').resolves({ id: '750xx', numberRecordsProcessed: 2001 });
+    sandbox.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+      this.emit('jobComplete', { id: '750xx', numberRecordsProcessed: 2001 });
     });
 
     vi.mocked(mockFetch).mockResolvedValueOnce(
@@ -102,11 +113,11 @@ describe('queryRecords', () => {
   it('respects a custom bulkThreshold', async () => {
     const connection = await testOrg.getConnection();
 
-    $$.SANDBOX.stub(Connection.prototype, 'query').resolves({ totalSize: 5, done: true, records: [] } as never);
-    $$.SANDBOX.stub(Connection.prototype, 'refreshAuth').resolves();
-    $$.SANDBOX.stub(QueryJobV2.prototype, 'open').resolves({ id: '750xx', numberRecordsProcessed: 5 } as never);
-    $$.SANDBOX.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
-      this.emit('jobComplete', { id: '750xx', numberRecordsProcessed: 5 } as QueryJobInfoV2);
+    sandbox.stub(Connection.prototype, 'query').resolves({ totalSize: 5, done: true, records: [] });
+    sandbox.stub(Connection.prototype, 'refreshAuth').resolves();
+    sandbox.stub(QueryJobV2.prototype, 'open').resolves({ id: '750xx', numberRecordsProcessed: 5 });
+    sandbox.stub(QueryJobV2.prototype, 'poll').callsFake(async function (this: QueryJobV2<Schema>) {
+      this.emit('jobComplete', { id: '750xx', numberRecordsProcessed: 5 });
     });
 
     vi.mocked(mockFetch).mockResolvedValueOnce(
@@ -122,16 +133,16 @@ describe('queryRecords', () => {
   it('strips ORDER BY, LIMIT, and OFFSET when deriving the COUNT() query', async () => {
     const connection = await testOrg.getConnection();
 
-    const queryStub = $$.SANDBOX.stub(Connection.prototype, 'query').resolves({
+    const queryStub = sandbox.stub(Connection.prototype, 'query').resolves({
       totalSize: 0,
       done: true,
       records: [],
-    } as never);
-    $$.SANDBOX.stub(Connection.prototype, 'autoFetchQuery').resolves({
+    });
+    sandbox.stub(Connection.prototype, 'autoFetchQuery').resolves({
       totalSize: 0,
       done: true,
       records: [],
-    } as never);
+    });
 
     await collect(
       queryRecords(connection, "SELECT Id FROM Contact WHERE Name = 'Foo' ORDER BY Name ASC LIMIT 10 OFFSET 5"),
