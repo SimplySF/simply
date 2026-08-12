@@ -71,10 +71,20 @@ function flattenRestRecord(record: Record<string, unknown>, prefix = ''): Record
 
     const flatKey = prefix ? `${prefix}.${key}` : key;
 
-    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+    if (value === null || value === undefined) {
+      flat[flatKey] = '';
+    } else if (typeof value === 'object' && !Array.isArray(value)) {
       Object.assign(flat, flattenRestRecord(value as Record<string, unknown>, flatKey));
+    } else if (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
+      typeof value === 'bigint' ||
+      Array.isArray(value)
+    ) {
+      flat[flatKey] = String(value);
     } else {
-      flat[flatKey] = value === null || value === undefined ? '' : String(value);
+      flat[flatKey] = '';
     }
   }
 
@@ -109,7 +119,7 @@ export async function* queryRecords(
     const result = await conn.autoFetchQuery(soql, { scanAll: options.scanAll });
 
     for (const record of result.records) {
-      yield flattenRestRecord(record as unknown as Record<string, unknown>);
+      yield flattenRestRecord(record);
     }
 
     return;
