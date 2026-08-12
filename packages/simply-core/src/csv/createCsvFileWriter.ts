@@ -15,8 +15,18 @@
  */
 
 import fs from 'node:fs';
-import { finished } from 'node:stream/promises';
-import { stringify } from 'csv-stringify';
+import { Transform } from 'node:stream';
+import { finished, pipeline } from 'node:stream/promises';
+import { stringify, type Options as StringifyOptions } from 'csv-stringify';
+
+// csv-stringify's default boolean cast writes "1"/"" (a spreadsheet-friendly convention), unlike
+// the plain String(value) coercion most callers here previously got from `csv-writer`. Cast
+// explicitly so writing a real boolean value still reads "true"/"false" in the output CSV.
+const CAST_OPTIONS: Pick<StringifyOptions, 'cast'> = {
+  cast: {
+    boolean: (value) => (value ? 'true' : 'false'),
+  },
+};
 
 export type CsvFileWriter = {
   /**
@@ -39,7 +49,7 @@ export type CsvFileWriter = {
  * instead of building an unbounded queue of pending writes.
  */
 export function createCsvFileWriter(outputPath: string, columns: string[]): CsvFileWriter {
-  const stringifier = stringify({ header: true, columns });
+  const stringifier = stringify({ header: true, columns, ...CAST_OPTIONS });
   const fileStream = fs.createWriteStream(outputPath);
 
   const donePromise = finished(fileStream);
@@ -69,4 +79,38 @@ export function createCsvFileWriter(outputPath: string, columns: string[]): CsvF
       await donePromise;
     },
   };
+}
+
+/**
+ * Stream every record from an async iterable straight into a CSV file via a single
+ * `stream.pipeline()` — source -> a counting pass-through -> `csv-stringify` -> the file. Use
+ * this instead of {@link createCsvFileWriter} when every record from a source goes to the same
+ * file unconditionally (e.g. dumping a query's results to disk); `pipeline()` wires up
+ * backpressure and error/completion handling for you, so there's no manual write-loop or
+ * write()/end() bookkeeping. For per-record branching (e.g. routing records to one of several
+ * files based on some condition) or writes from concurrent producers, use
+ * {@link createCsvFileWriter} directly instead.
+ */
+export async function writeRecordsToCsvFile(
+  records: AsyncIterable<Record<string, unknown>>,
+  outputPath: string,
+  columns: string[],
+): Promise<{ recordCount: number }> {
+  let recordCount = 0;
+  const countRecords = new Transform({
+    objectMode: true,
+    transform(record: Record<string, unknown>, _encoding, callback): void {
+      recordCount++;
+      callback(null, record);
+    },
+  });
+
+  await pipeline(
+    records,
+    countRecords,
+    stringify({ header: true, columns, ...CAST_OPTIONS }),
+    fs.createWriteStream(outputPath),
+  );
+
+  return { recordCount };
 }
