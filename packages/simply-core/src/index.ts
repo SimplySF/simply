@@ -23,3 +23,4 @@ export {
   type StreamBulkQueryToFileOptions,
   type StreamBulkQueryToFileResult,
 } from './bulk/streamBulkQuery.js';
+export { queryRecords, type QueryRecordsOptions } from './query/queryRecords.js';
