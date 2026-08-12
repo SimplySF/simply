@@ -13,12 +13,7 @@
   "engines": {
     "node": "^22.13.0 || ^24.0.0 || ^26.0.0"
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "allowScripts": {
-    "nx": true
-  },
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "build": "lerna run build",
     "compile": "lerna run compile",
@@ -48,6 +43,7 @@
     "lerna": "^10.0.0",
     "linkinator": "^8.0.3",
     "lint-staged": "^17.3.0",
+    "minimatch": "^10.2.6",
     "nock": "^14.0.15",
     "oclif": "^4.23.0",
     "prettier": "^3.9.6",
