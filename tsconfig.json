@@ -1,12 +1,20 @@
 {
-  "extends": "@salesforce/dev-config/tsconfig-strict-esm",
   "compilerOptions": {
     "module": "Node16",
     "moduleResolution": "Node16",
-    "outDir": "lib",
-    "rootDir": "src",
+    "noEmit": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "sourceMap": true,
+    "declaration": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["packages/*/src/**/*.ts"],
+  "ts-node": {
+    "esm": true
+  }
 }
