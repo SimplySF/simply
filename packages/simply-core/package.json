@@ -65,7 +65,8 @@
       "command": "tsc -p . --pretty --incremental",
       "files": [
         "src/**/*.ts",
-        "**/tsconfig.json"
+        "**/tsconfig.json",
+        "../../tsconfig.json"
       ],
       "output": [
         "lib/**",
