@@ -1,8 +1,17 @@
 /*
- * Copyright (c) 2024, Clay Chipps; Copyright (c) 2024, Salesforce.com, Inc.
- * All rights reserved.
- * Licensed under the BSD 3-Clause license.
- * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ * Copyright (c) 2026, Clay Chipps; Copyright (c) 2026 Salesforce, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import js from '@eslint/js';
@@ -31,10 +40,7 @@ const apacheHeaderPackages = [
   'packages/simply-sobject',
 ];
 
-// The legacy "simply" umbrella package still carries the original BSD-3-Clause header.
-const bsdHeaderPackages = ['packages/simply'];
-
-const allPackages = [...apacheHeaderPackages, ...bsdHeaderPackages];
+const allPackages = [...apacheHeaderPackages];
 
 // sf-plugin's recommended rules only ever applied to the oclif command packages, not simply-core or simply.
 const sfPluginPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-core' && pkg !== 'packages/simply');
@@ -64,22 +70,6 @@ const apacheHeaderRule = [
     ' * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.',
     ' * See the License for the specific language governing permissions and',
     ' * limitations under the License.',
-    ' ',
-  ],
-];
-
-const bsdHeaderRule = [
-  2,
-  'block',
-  [
-    '',
-    {
-      pattern: ' \\* Copyright \\(c\\) \\d{4}, Clay Chipps; Copyright \\(c\\) \\d{4}, Salesforce.com, Inc.',
-      template: ' * Copyright (c) 2024, Clay Chipps; Copyright (c) 2024, Salesforce.com, Inc.',
-    },
-    ' * All rights reserved.',
-    ' * Licensed under the BSD 3-Clause license.',
-    ' * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause',
     ' ',
   ],
 ];
@@ -147,11 +137,6 @@ export default [
     files: toSrcFiles(apacheHeaderPackages),
     plugins: { header: headerPlugin },
     rules: { 'header/header': apacheHeaderRule },
-  },
-  {
-    files: toSrcFiles(bsdHeaderPackages),
-    plugins: { header: headerPlugin },
-    rules: { 'header/header': bsdHeaderRule },
   },
   ...scoped(mochaTestPackages, { env: { mocha: true }, rules: testOverrideRules }, toTestFiles(mochaTestPackages)),
   ...scoped(nonMochaTestPackages, { rules: testOverrideRules }, toTestFiles(nonMochaTestPackages)),
