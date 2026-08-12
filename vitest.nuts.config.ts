@@ -18,21 +18,13 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    // @salesforce/core/testSetup registers its stub/restore hooks against the
-    // global beforeEach/afterEach, so vitest must expose test globals at runtime.
-    globals: true,
     environment: 'node',
-    include: ['test/**/*.test.ts'],
-    // oclif/ink table rendering patches the global console via `patch-console`,
-    // which expects a real console.Console constructor. Vitest's intercepted
-    // console shim doesn't provide one, so leave the real console in place.
-    disableConsoleIntercept: true,
-    testTimeout: 10_000,
-    coverage: {
-      provider: 'v8',
-      reporter: ['lcov', 'text'],
-      include: ['src/**/*.ts'],
-      exclude: ['src/**/*.d.ts'],
-    },
+    include: ['test/**/*.nut.ts'],
+    projects: ['packages/*'],
+    // NUTs create real scratch orgs and run commands against them, so they
+    // need much longer allowances than the unit test config.
+    testTimeout: 1_200_000,
+    hookTimeout: 1_200_000,
+    maxWorkers: 5,
   },
 });
