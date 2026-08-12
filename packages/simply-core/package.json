@@ -88,7 +88,9 @@
         "src/**/*.ts",
         "test/**/*.ts",
         "**/.eslint*",
-        "**/tsconfig.json"
+        "**/tsconfig.json",
+        "../../eslint.config.mjs",
+        "../../tsconfig.json"
       ],
       "output": []
     },
