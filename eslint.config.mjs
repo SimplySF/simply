@@ -36,6 +36,7 @@ const compat = new FlatCompat({
 
 // Packages carrying the Apache-2.0 header (all published plugins except the legacy "simply" umbrella package).
 const apacheHeaderPackages = [
+  'packages/simply',
   'packages/simply-apex',
   'packages/simply-core',
   'packages/simply-data',
