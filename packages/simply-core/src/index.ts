@@ -24,4 +24,4 @@ export {
   type StreamBulkQueryToFileResult,
 } from './bulk/streamBulkQuery.js';
 export { queryRecords, type QueryRecordsOptions } from './query/queryRecords.js';
-export { createCsvFileWriter, type CsvFileWriter } from './csv/createCsvFileWriter.js';
+export { createCsvFileWriter, writeRecordsToCsvFile, type CsvFileWriter } from './csv/createCsvFileWriter.js';
