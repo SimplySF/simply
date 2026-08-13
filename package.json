@@ -20,10 +20,14 @@
     "format": "lerna run format",
     "lint": "lerna run lint",
     "prepare": "husky",
+    "reset": "node scripts/reset.mjs",
+    "reset:install": "node scripts/reset.mjs --install",
     "test": "lerna run test",
     "test:only": "lerna run test:only"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@eslint/eslintrc": "^2.1.4",
     "@eslint/js": "^8.57.1",
     "@oclif/plugin-command-snapshot": "^5.3.19",
