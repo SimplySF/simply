@@ -110,13 +110,13 @@ importers:
         specifier: workspace:^2.3.9
         version: link:../simply-data
       '@simplysf/simply-package':
-        specifier: workspace:^2.6.4
+        specifier: workspace:^2.7.0
         version: link:../simply-package
       '@simplysf/simply-permissions':
         specifier: workspace:^1.2.12
         version: link:../simply-permissions
       '@simplysf/simply-project':
-        specifier: workspace:^1.2.9
+        specifier: workspace:^1.2.10
         version: link:../simply-project
       '@simplysf/simply-sobject':
         specifier: workspace:^1.3.5
