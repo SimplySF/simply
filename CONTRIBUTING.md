@@ -30,13 +30,19 @@ Tooling:
 
 ## Setup
 
+This repo pins its pnpm version via the `packageManager` field in `package.json`. Use [Corepack](https://nodejs.org/api/corepack.html) (bundled with Node.js) to install that exact version rather than installing pnpm globally:
+
 ```sh
+corepack enable
 git clone git@github.com:SimplySF/simply.git
 cd simply
+corepack install   # installs the pnpm version pinned in package.json
 pnpm install
 pnpm run build
 pnpm test
 ```
+
+`corepack enable` only needs to be run once per machine. After that, Corepack transparently uses whatever version of pnpm is pinned in `package.json`, so every contributor and CI job runs the same version.
 
 `pnpm install` at the root installs and links all three packages and sets up git hooks automatically via husky.
 
@@ -146,8 +152,8 @@ git push origin --tags
 
 ## CI
 
-| Workflow      | Trigger                                               | What it does                                                                                                                                                                          |
-| ------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Workflow      | Trigger                                               | What it does                                                                                                                                                                            |
+| ------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `test.yml`    | Push to non-main branches                             | Runs `pnpm run build` + `pnpm test` on Linux (lts/_, lts/-1) and Windows (lts/_)                                                                                                        |
 | `release.yml` | Push to `main` or `prerelease/**`, or manual dispatch | Runs `pnpm run build` + `pnpm test`, then bumps versions, tags, creates GitHub releases, and publishes to npm in one step (see [Versioning and Publishing](#versioning-and-publishing)) |
 
@@ -157,7 +163,7 @@ git push origin --tags
 | ------------ | ------------------------------------------------------- |
 | `pre-commit` | `lint-staged` — runs `prettier --write` on staged files |
 | `commit-msg` | `commitlint` — enforces conventional commit format      |
-| `pre-push`   | `pnpm run build && pnpm test`                             |
+| `pre-push`   | `pnpm run build && pnpm test`                           |
 
 Hooks are installed automatically on `pnpm install` via the `prepare: husky` script.
 
