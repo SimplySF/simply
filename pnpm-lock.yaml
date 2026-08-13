@@ -110,7 +110,7 @@ importers:
         specifier: workspace:^2.3.9
         version: link:../simply-data
       '@simplysf/simply-package':
-        specifier: workspace:^2.6.3
+        specifier: workspace:^2.6.4
         version: link:../simply-package
       '@simplysf/simply-permissions':
         specifier: workspace:^1.2.12
