@@ -295,6 +295,9 @@ importers:
       '@simplysf/simply-core':
         specifier: workspace:^1.1.4
         version: link:../simply-core
+      handlebars:
+        specifier: ^4.7.9
+        version: 4.7.9
       xmlbuilder2:
         specifier: ^4.0.3
         version: 4.0.3
