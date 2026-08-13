@@ -47,6 +47,10 @@ export type CsvFileWriter = {
  * records in memory or re-opening the file per write, so writing many records keeps memory flat.
  * `write()` respects the underlying stream's backpressure, so callers get naturally throttled
  * instead of building an unbounded queue of pending writes.
+ *
+ * @param outputPath - The filesystem path to write the CSV file to.
+ * @param columns - The column names to use for the header row and field ordering.
+ * @returns A writer with `write()`/`end()` methods for streaming records to the file.
  */
 export function createCsvFileWriter(outputPath: string, columns: string[]): CsvFileWriter {
   const stringifier = stringify({ header: true, columns, ...CAST_OPTIONS });
@@ -90,6 +94,11 @@ export function createCsvFileWriter(outputPath: string, columns: string[]): CsvF
  * write()/end() bookkeeping. For per-record branching (e.g. routing records to one of several
  * files based on some condition) or writes from concurrent producers, use
  * {@link createCsvFileWriter} directly instead.
+ *
+ * @param records - The records to write, consumed in order as they're yielded.
+ * @param outputPath - The filesystem path to write the CSV file to.
+ * @param columns - The column names to use for the header row and field ordering.
+ * @returns The total number of records written.
  */
 export async function writeRecordsToCsvFile(
   records: AsyncIterable<Record<string, unknown>>,

@@ -59,9 +59,20 @@ export type StreamBulkQueryToFileResult = {
  * so this is used to de-duplicate headers when appending subsequent pages to the same file.
  */
 export class SkipFirstLineTransform extends Transform {
+  /** Whether the header row has already been located and stripped. */
   private firstLineSkipped = false;
+  /** Bytes buffered so far while still searching for the header row's terminating newline. */
   private buffer: Buffer = Buffer.alloc(0);
 
+  /**
+   * Buffers incoming chunks until the first newline is found (stripping everything up to and
+   * including it), then passes all subsequent chunks through unchanged.
+   *
+   * @param chunk - The next chunk of raw CSV bytes.
+   * @param _encoding - Unused; chunks are handled as raw `Buffer`s regardless of encoding.
+   * @param callback - Node stream callback; invoked with the chunk to emit (or no chunk while
+   * still buffering for the header's newline).
+   */
   public _transform(chunk: Buffer, _encoding: BufferEncoding, callback: TransformCallback): void {
     if (this.firstLineSkipped) {
       callback(null, chunk);
@@ -84,6 +95,12 @@ export class SkipFirstLineTransform extends Transform {
     callback(null, remainingData);
   }
 
+  /**
+   * Releases the internal buffer at end-of-stream. Any bytes still buffered at this point
+   * belong to a header row with no trailing newline, so they're discarded rather than emitted.
+   *
+   * @param callback - Node stream callback; invoked once cleanup is complete.
+   */
   public _flush(callback: TransformCallback): void {
     this.buffer = Buffer.alloc(0);
     callback();
@@ -98,6 +115,11 @@ export class SkipFirstLineTransform extends Transform {
  * only fires once the *entire* response body has been buffered into memory. That defeats
  * streaming for large result sets. Using `undici`'s `fetch()` directly and converting the Fetch
  * API response body to a Node `Readable` avoids that buffering entirely.
+ *
+ * @param conn - The org connection to fetch the page with; used for URL normalization and auth.
+ * @param path - The Bulk API v2 results path (or locator-qualified continuation path) to fetch.
+ * @returns The page's raw CSV byte stream, plus the locator for the next page if one exists.
+ * @throws {SfError} If the HTTP response isn't OK, or has no body.
  */
 async function fetchResultPage(conn: Connection, path: string): Promise<{ stream: Readable; locator?: string }> {
   const url = conn.normalizeUrl(path);
@@ -134,6 +156,10 @@ async function fetchResultPage(conn: Connection, path: string): Promise<{ stream
  *
  * Pages can't be fetched in parallel: each page's locator (needed to request the next one) only
  * arrives in that page's response headers.
+ *
+ * @param conn - The org connection to fetch pages with.
+ * @param resultsPath - The Bulk API v2 job results path, e.g. `/jobs/query/{jobId}/results`.
+ * @yields Raw CSV byte chunks, in order, with duplicate header rows already stripped.
  */
 async function* iterateResultChunks(conn: Connection, resultsPath: string): AsyncGenerator<Buffer> {
   let locator: string | undefined;
@@ -161,6 +187,12 @@ async function* iterateResultChunks(conn: Connection, resultsPath: string): Asyn
  * HTTP response directly and exposes it as one continuous, backpressure-respecting `Readable`,
  * so memory usage stays flat regardless of result set size. Pages are fetched lazily, one at a
  * time, only as the returned stream is consumed.
+ *
+ * @param conn - The org connection to run the query on.
+ * @param soql - The SOQL query to run.
+ * @param options - Optional job/polling behavior overrides.
+ * @returns The job ID, record count, and a merged CSV stream of the results.
+ * @throws {SfError} If the query job doesn't report completion after polling.
  */
 export async function streamBulkQuery(
   conn: Connection,
@@ -205,6 +237,12 @@ export async function streamBulkQuery(
  * A thin convenience wrapper around {@link streamBulkQuery} for the common "just write it to
  * disk" case. Use {@link streamBulkQuery} directly if you want to consume or transform the
  * results without touching the filesystem (e.g. piping through a CSV parser).
+ *
+ * @param conn - The org connection to run the query on.
+ * @param soql - The SOQL query to run.
+ * @param outputPath - The filesystem path to write the merged CSV results to.
+ * @param options - Optional job/polling behavior overrides.
+ * @returns The job ID and record count.
  */
 export async function streamBulkQueryToFile(
   conn: Connection,
