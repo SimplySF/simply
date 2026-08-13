@@ -38,6 +38,10 @@ const DEFAULT_BULK_THRESHOLD = 2000;
  * Derive a `SELECT COUNT() ...` query from a SOQL query, for sizing it before deciding how to
  * run it. `SELECT COUNT()` doesn't accept a field list, ORDER BY, LIMIT, or OFFSET, so those are
  * stripped; the FROM object and WHERE clause (which determine cardinality) are kept as-is.
+ *
+ * @param soql - The SOQL query to derive a COUNT() query from.
+ * @returns The equivalent `SELECT COUNT() FROM ...` query.
+ * @throws {SfError} If the query has no `FROM` clause to anchor on.
  */
 function toCountQuery(soql: string): string {
   const fromIndex = soql.search(/\bFROM\b/i);
@@ -60,6 +64,11 @@ function toCountQuery(soql: string): string {
  * Flatten a REST query result record into the same shape Bulk API v2's CSV results use: parent
  * relationship fields (e.g. `Contact.Account.Name`) as dot-joined flat keys instead of nested
  * objects, every value stringified, and the `attributes` metadata property dropped.
+ *
+ * @param record - The REST query result record to flatten.
+ * @param prefix - The dot-joined key prefix to prepend; used internally for recursive calls into
+ * nested relationship objects. Callers should omit this.
+ * @returns A flat record with dot-joined keys and stringified values.
  */
 function flattenRestRecord(record: Record<string, unknown>, prefix = ''): Record<string, string> {
   const flat: Record<string, string> = {};
@@ -105,6 +114,11 @@ function flattenRestRecord(record: Record<string, unknown>, prefix = ''): Record
  * REST results are flattened to match Bulk's CSV shape (see {@link flattenRestRecord}) and every
  * field is stringified either way, so callers get one consistent record shape no matter which
  * path was taken. Not suitable for Tooling API queries — Bulk API v2 doesn't support them.
+ *
+ * @param conn - The org connection to run the query on.
+ * @param soql - The SOQL query to run.
+ * @param options - Optional thresholding/polling behavior overrides.
+ * @yields Flat, string-valued records, in query result order.
  */
 export async function* queryRecords(
   conn: Connection,
