@@ -110,7 +110,7 @@ importers:
         specifier: workspace:^2.3.9
         version: link:../simply-data
       '@simplysf/simply-document':
-        specifier: workspace:^0.3.0
+        specifier: workspace:^0.3.1
         version: link:../simply-document
       '@simplysf/simply-package':
         specifier: workspace:^2.8.1
@@ -122,7 +122,7 @@ importers:
         specifier: workspace:^1.2.10
         version: link:../simply-project
       '@simplysf/simply-schema':
-        specifier: workspace:^0.2.1
+        specifier: workspace:^0.2.2
         version: link:../simply-schema
       '@simplysf/simply-sobject':
         specifier: workspace:^1.4.0
