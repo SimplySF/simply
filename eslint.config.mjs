@@ -40,6 +40,7 @@ const allPackages = [
   'packages/simply-apex',
   'packages/simply-core',
   'packages/simply-data',
+  'packages/simply-document',
   'packages/simply-package',
   'packages/simply-permissions',
   'packages/simply-project',
