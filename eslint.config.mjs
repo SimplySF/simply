@@ -44,6 +44,7 @@ const allPackages = [
   'packages/simply-package',
   'packages/simply-permissions',
   'packages/simply-project',
+  'packages/simply-schema',
   'packages/simply-sobject',
 ];
 
