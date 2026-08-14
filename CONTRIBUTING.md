@@ -13,20 +13,27 @@ Thanks for your interest in contributing to Simply! This document covers the rep
 
 ## Repository Structure
 
-This repository is a Lerna monorepo containing three Salesforce CLI plugins:
+This repository is a Lerna monorepo containing eight Salesforce CLI plugins, plus one internal shared library:
 
-| Package                                               | Description                                                  | Path                      |
-| ----------------------------------------------------- | ------------------------------------------------------------ | ------------------------- |
-| [`@simplysf/simply`](packages/simply)                 | Orchestrator plugin — bundles simply-data and simply-package | `packages/simply`         |
-| [`@simplysf/simply-data`](packages/simply-data)       | File upload/download commands                                | `packages/simply-data`    |
-| [`@simplysf/simply-package`](packages/simply-package) | Package dependency management commands                       | `packages/simply-package` |
+| Package                                                       | Description                                      | Path                          |
+| ------------------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
+| [`@simplysf/simply`](packages/simply)                         | Orchestrator plugin — bundles every plugin below | `packages/simply`             |
+| [`@simplysf/simply-apex`](packages/simply-apex)               | Apex commands                                    | `packages/simply-apex`        |
+| [`@simplysf/simply-data`](packages/simply-data)               | File upload/download commands                    | `packages/simply-data`        |
+| [`@simplysf/simply-document`](packages/simply-document)       | Documentation generation commands                | `packages/simply-document`    |
+| [`@simplysf/simply-package`](packages/simply-package)         | Package dependency management commands           | `packages/simply-package`     |
+| [`@simplysf/simply-permissions`](packages/simply-permissions) | Permissions commands                             | `packages/simply-permissions` |
+| [`@simplysf/simply-project`](packages/simply-project)         | Salesforce project commands                      | `packages/simply-project`     |
+| [`@simplysf/simply-schema`](packages/simply-schema)           | Schema visualization commands                    | `packages/simply-schema`      |
+| [`@simplysf/simply-sobject`](packages/simply-sobject)         | SObject commands                                 | `packages/simply-sobject`     |
+| [`@simplysf/simply-core`](packages/simply-core)               | Shared internal library — not a CLI plugin       | `packages/simply-core`        |
 
 Tooling:
 
 - **Package manager:** pnpm workspaces
 - **Task orchestration:** Lerna v10 (independent versioning) + Wireit (per-package build caching)
 - **Language:** TypeScript (ESM)
-- **Node:** >=22.13.0 (required by Lerna 10; the published CLI plugins themselves only require >=22.0.0)
+- **Node:** ^22.13.0 || ^24.0.0 || ^26.0.0 (required by Lerna 10; the published CLI plugins themselves only require >=22.0.0)
 
 ## Setup
 
@@ -44,7 +51,7 @@ pnpm test
 
 `corepack enable` only needs to be run once per machine. After that, Corepack transparently uses whatever version of pnpm is pinned in `package.json`, so every contributor and CI job runs the same version.
 
-`pnpm install` at the root installs and links all three packages and sets up git hooks automatically via husky.
+`pnpm install` at the root installs and links every workspace package and sets up git hooks automatically via husky.
 
 To try your changes with the Salesforce CLI, run a plugin's local dev binary from inside its package directory:
 
@@ -71,7 +78,8 @@ pnpm run lint        # lerna run lint
 pnpm run test        # lerna run test
 pnpm run test:only   # lerna run test:only
 pnpm run format      # lerna run format
-pnpm run clean       # lerna run clean
+pnpm run reset       # clear node_modules, the lockfile, and all wireit/TS/ESLint caches
+pnpm run reset:install  # same as reset, then reinstall dependencies
 ```
 
 Run inside a single package directory to target just that package:
@@ -114,8 +122,15 @@ If your change only affects one package, scope the commit to it, e.g. `feat(simp
 - Keep pull requests focused on a single change where possible.
 - Make sure `pnpm run build` and `pnpm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
 - Aim for high test coverage on new code.
-- Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); `simply` and `simply-package` require running `pnpm run readme` manually in that package and committing the result.
+- Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); every other plugin package requires running `pnpm run readme` manually in that package and committing the result.
 - `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `pnpm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `pnpm run build`, so a stale, uncommitted snapshot fails the build.
+- If you change a package's flags and that package is bundled into `@simplysf/simply` (see the orchestrator's `oclif.plugins` list), also rebuild `packages/simply`'s own `command-snapshot.json`. Its wireit cache only watches `packages/simply/src/**/*.ts`, so `pnpm run build` there won't notice a dependency's flags changed and will report cached success without regenerating anything. Force it by running its snapshot generator directly:
+
+  ```sh
+  cd packages/simply
+  node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:generate
+  npx prettier --write command-snapshot.json
+  ```
 
 ## Versioning and Publishing
 
@@ -138,17 +153,6 @@ lerna publish --conventional-commits --conventional-prerelease --preid dev --cre
 ### Recovering a Failed Publish
 
 If a version was tagged and released but npm publish failed for one or more packages (e.g. a registry outage), trigger the `release` workflow manually (`workflow_dispatch`) with the `prerelease` input left blank. This runs `lerna publish from-package --yes`, which compares each package's committed version against what's actually on npm and publishes anything missing, without bumping versions again.
-
-### First Release After Migration
-
-The existing git tags use the old single-package format (e.g., `2.2.0`). Before the first Lerna release, create matching tags in Lerna's expected format so conventional-commits analysis starts from the right place:
-
-```sh
-git tag @simplysf/simply@2.2.0 <commit-sha>
-git tag @simplysf/simply-data@2.1.1 <commit-sha>
-git tag @simplysf/simply-package@2.3.0 <commit-sha>
-git push origin --tags
-```
 
 ## CI
 
