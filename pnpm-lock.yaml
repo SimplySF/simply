@@ -107,6 +107,9 @@ importers:
       '@simplysf/simply-apex':
         specifier: workspace:^1.1.12
         version: link:../simply-apex
+      '@simplysf/simply-cicd':
+        specifier: workspace:^0.1.0
+        version: link:../simply-cicd
       '@simplysf/simply-data':
         specifier: workspace:^2.3.11
         version: link:../simply-data
