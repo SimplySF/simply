@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.7](https://github.com/SimplySF/simply-node/compare/%40simplysf%2Fsimply-core%401.1.6...%40simplysf%2Fsimply-core%401.1.7) (2026-08-16)
+
+### Bug Fixes
+
+- update repository urls ([bfae56d](https://github.com/SimplySF/simply-node/commit/bfae56d1f6526c5627746b56cd69120cf75b3c1c))
+
 ## [1.1.6](https://github.com/SimplySF/simply/compare/%40simplysf%2Fsimply-core%401.1.5...%40simplysf%2Fsimply-core%401.1.6) (2026-08-13)
 
 **Note:** Version bump only for package @simplysf/simply-core
