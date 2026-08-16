@@ -38,6 +38,7 @@ const compat = new FlatCompat({
 const allPackages = [
   'packages/simply',
   'packages/simply-apex',
+  'packages/simply-cicd',
   'packages/simply-core',
   'packages/simply-data',
   'packages/simply-document',
