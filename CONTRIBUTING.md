@@ -41,7 +41,7 @@ This repo pins its pnpm version via the `packageManager` field in `package.json`
 
 ```sh
 corepack enable
-git clone git@github.com:SimplySF/simply.git
+git clone git@github.com:SimplySF/simply-node.git
 cd simply
 corepack install   # installs the pnpm version pinned in package.json
 pnpm install
@@ -173,4 +173,4 @@ Hooks are installed automatically on `pnpm install` via the `prepare: husky` scr
 
 ## Reporting Issues
 
-Please report bugs or request features by [opening an issue](https://github.com/SimplySF/simply/issues) rather than submitting a PR without prior discussion for anything non-trivial.
+Please report bugs or request features by [opening an issue](https://github.com/SimplySF/simply-node/issues) rather than submitting a PR without prior discussion for anything non-trivial.

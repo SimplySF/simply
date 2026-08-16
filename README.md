@@ -48,7 +48,7 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the repo s
 
 ## Issues
 
-Please report bugs or request features by [opening an issue](https://github.com/SimplySF/simply/issues) in this repository.
+Please report bugs or request features by [opening an issue](https://github.com/SimplySF/simply-node/issues) in this repository.
 
 ## License
 
