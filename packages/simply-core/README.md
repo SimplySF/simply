@@ -1,6 +1,6 @@
 # @simplysf/simply-core
 
-[![NPM](https://img.shields.io/npm/v/@simplysf/simply-core?label=@simplysf/simply-core)](https://npmjs.com/@simplysf/simply-core) [![Downloads/week](https://img.shields.io/npm/dw/@simplysf/simply-core.svg)](https://npmjs.com/@simplysf/simply-core) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://raw.githubusercontent.com/SimplySF/simply/main/LICENSE.txt)
+[![NPM](https://img.shields.io/npm/v/@simplysf/simply-core?label=@simplysf/simply-core)](https://npmjs.com/@simplysf/simply-core) [![Downloads/week](https://img.shields.io/npm/dw/@simplysf/simply-core.svg)](https://npmjs.com/@simplysf/simply-core) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://raw.githubusercontent.com/SimplySF/simply-node/main/LICENSE.txt)
 
 Shared internal utilities for [`@simplysf`](https://github.com/SimplySF/simply-node) Salesforce CLI plugins. This is not a Salesforce CLI plugin itself — it's a plain library consumed by the other packages in this monorepo.
 
