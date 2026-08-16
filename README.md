@@ -4,9 +4,11 @@
 
 Simply is a collection of [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) plugins built by [SimplySF](https://github.com/SimplySF) that add commands for working with Apex, CI/CD pipelines, data, documentation generation, packages, permissions, projects, schema visualization, and SObjects in Salesforce orgs.
 
+📖 **[Documentation site](https://simplysf.github.io/simply/)** — guides and command reference for every plugin, with [`simply-cicd`](https://simplysf.github.io/simply/cicd/) covered in the most depth.
+
 ## Packages
 
-This repository is a monorepo. Nine packages are published independently to npm as CLI plugins, plus one internal shared library used by the others:
+This repository is a monorepo. Ten packages are published independently to npm as CLI plugins, plus one internal shared library used by the others:
 
 | Package                                                       | Description                                                           |
 | ------------------------------------------------------------- | --------------------------------------------------------------------- |

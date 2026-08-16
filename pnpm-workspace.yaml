@@ -1,5 +1,6 @@
 packages:
   - 'packages/*'
+  - 'site'
 onlyBuiltDependencies:
   - nx
 minimumReleaseAgeExclude:
@@ -7,5 +8,6 @@ minimumReleaseAgeExclude:
   - '@simplysf/simply-data@2.3.4'
   - '@simplysf/simply-package@2.5.4'
 allowBuilds:
+  esbuild: true
   nx: true
   unrs-resolver: true

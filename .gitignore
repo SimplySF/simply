@@ -154,3 +154,9 @@ vite.config.ts.timestamp-*
 
 # build
 lib
+
+# Astro
+.astro/
+
+# Nx cache
+.nx/
