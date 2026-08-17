@@ -55,7 +55,10 @@ jobs:
           path: site/dist
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Auto-deploys on every push to main, or on a manual run explicitly
+    # dispatched against main (still gated to main so a manual run against
+    # some other branch/ref can never publish it to Pages).
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: build
     runs-on: ubuntu-latest
     environment:
