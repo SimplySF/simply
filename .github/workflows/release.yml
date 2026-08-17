@@ -51,9 +51,11 @@ jobs:
 
       - run: pnpm test
 
+      # TODO: remove --ignore-changes once simply-cicd is manually republished to npm
+      # and the 24h post-unpublish block has cleared (see packages/simply/package.json).
       - name: Version and publish (release)
         if: github.event_name == 'push' && github.ref_name == 'main'
-        run: pnpm exec lerna publish --conventional-commits --create-release github --yes
+        run: pnpm exec lerna publish --conventional-commits --create-release github --yes --ignore-changes "packages/simply-cicd/**"
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
