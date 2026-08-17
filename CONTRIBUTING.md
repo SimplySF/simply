@@ -109,7 +109,7 @@ pnpm add -w -D <package>
 
 ## Documentation Site
 
-The [docs site](https://simplysf.github.io/simply/) lives in [`site/`](site) — an [Astro Starlight](https://starlight.astro.build/) site, deployed to GitHub Pages by `.github/workflows/docs.yml` on every push to `main` that touches `site/**` or any package's `README.md`/`package.json`.
+The [docs site](https://simplysf.github.io/simply-node/) lives in [`site/`](site) — an [Astro Starlight](https://starlight.astro.build/) site, deployed to GitHub Pages by `.github/workflows/docs.yml` on every push to `main` that touches `site/**` or any package's `README.md`/`package.json`.
 
 ```sh
 pnpm --filter site run dev     # local preview at http://localhost:4321/simply/, auto-regenerates command reference pages
