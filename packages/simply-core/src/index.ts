@@ -25,3 +25,12 @@ export {
 } from './bulk/streamBulkQuery.js';
 export { queryRecords, type QueryRecordsOptions } from './query/queryRecords.js';
 export { createCsvFileWriter, writeRecordsToCsvFile, type CsvFileWriter } from './csv/createCsvFileWriter.js';
+export { chunk, mapChunked } from './collection/chunk.js';
+export {
+  loadJsonConfig,
+  loadJsonConfigSync,
+  parseJsonConfig,
+  type ConfigSchema,
+  type JsonConfigResult,
+} from './config/loadJsonConfig.js';
+export { ensureDirectory, timestampForFileName } from './fs/paths.js';
