@@ -34,3 +34,13 @@ export {
   type JsonConfigResult,
 } from './config/loadJsonConfig.js';
 export { ensureDirectory, timestampForFileName } from './fs/paths.js';
+export { chunkedInQuery, type ChunkedInQueryOptions } from './query/chunkedInQuery.js';
+export {
+  LOCAL_PACKAGE_LABEL,
+  LOCAL_PUBLISHER_NAME,
+  normalizePublisherName,
+  resolvePackageNamesByApiName,
+  resolvePackageNamesBySubjectId,
+  type ResolvePackageNamesByApiNameOptions,
+  type ResolvePackageNamesOptions,
+} from './metadata/packageAttribution.js';
