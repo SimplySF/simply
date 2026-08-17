@@ -36,6 +36,25 @@ export {
 export { ensureDirectory, timestampForFileName } from './fs/paths.js';
 export { chunkedInQuery, type ChunkedInQueryOptions } from './query/chunkedInQuery.js';
 export {
+  isPackage2Id,
+  isPackage2VersionId,
+  isSubscriberPackageId,
+  isSubscriberPackageVersionId,
+  PACKAGE_PREFIX_PACKAGE2,
+  PACKAGE_PREFIX_PACKAGE2_VERSION,
+  PACKAGE_PREFIX_SUBSCRIBER_PACKAGE,
+  PACKAGE_PREFIX_SUBSCRIBER_PACKAGE_VERSION,
+} from './package/packageIds.js';
+export {
+  getDefaultPackageDirectory,
+  getPluginConfig,
+  readSfdxProject,
+  SFDX_PROJECT_FILE_NAME,
+  type SfdxPackageDirectory,
+  type SfdxPackageDirectoryDependency,
+  type SfdxProject,
+} from './project/sfdxProject.js';
+export {
   LOCAL_PACKAGE_LABEL,
   LOCAL_PUBLISHER_NAME,
   normalizePublisherName,
