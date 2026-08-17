@@ -104,28 +104,28 @@ importers:
         specifier: ^4.11.2
         version: 4.13.3
       '@simplysf/simply-apex':
-        specifier: workspace:^1.1.17
+        specifier: workspace:^1.1.18
         version: link:../simply-apex
       '@simplysf/simply-data':
-        specifier: workspace:^2.3.16
+        specifier: workspace:^2.3.17
         version: link:../simply-data
       '@simplysf/simply-document':
         specifier: workspace:^0.3.3
         version: link:../simply-document
       '@simplysf/simply-package':
-        specifier: workspace:^2.8.6
+        specifier: workspace:^2.8.7
         version: link:../simply-package
       '@simplysf/simply-permissions':
-        specifier: workspace:^1.2.20
+        specifier: workspace:^1.2.21
         version: link:../simply-permissions
       '@simplysf/simply-project':
         specifier: workspace:^1.2.14
         version: link:../simply-project
       '@simplysf/simply-schema':
-        specifier: workspace:^0.3.6
+        specifier: workspace:^0.3.7
         version: link:../simply-schema
       '@simplysf/simply-sobject':
-        specifier: workspace:^1.4.7
+        specifier: workspace:^1.4.8
         version: link:../simply-sobject
       debug:
         specifier: ^4.4.3
@@ -156,7 +156,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-plugin-kit':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       zod:
         specifier: ^4.1.12
@@ -267,7 +267,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-plugin-kit':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       csv-parse:
         specifier: ^7.0.2
@@ -356,7 +356,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-plugin-kit':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       zod:
         specifier: ^4.1.12
@@ -396,7 +396,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-plugin-kit':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       handlebars:
         specifier: ^4.7.9
@@ -532,7 +532,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-plugin-kit':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       handlebars:
         specifier: ^4.7.9
