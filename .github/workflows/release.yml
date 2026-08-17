@@ -51,8 +51,12 @@ jobs:
 
       - run: pnpm test
 
-      # TODO: remove --ignore-changes once simply-cicd is manually republished to npm
-      # and the 24h post-unpublish block has cleared (see packages/simply/package.json).
+      # TODO: remove --ignore-changes, and remove "private": true from
+      # packages/simply-cicd/package.json, once simply-cicd is manually
+      # republished to npm and the 24h post-unpublish block has cleared.
+      # (--ignore-changes guards this step; "private" guards the
+      # "Publish tagged versions missing from npm" step below, which
+      # doesn't do change-detection so --ignore-changes doesn't apply to it.)
       - name: Version and publish (release)
         if: github.event_name == 'push' && github.ref_name == 'main'
         run: pnpm exec lerna publish --conventional-commits --create-release github --yes --ignore-changes "packages/simply-cicd/**"
