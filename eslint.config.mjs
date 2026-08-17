@@ -44,17 +44,21 @@ const allPackages = [
   'packages/simply-document',
   'packages/simply-package',
   'packages/simply-permissions',
+  'packages/simply-plugin-kit',
   'packages/simply-project',
   'packages/simply-schema',
   'packages/simply-sobject',
 ];
 
-// sf-plugin's recommended rules only ever applied to the oclif command packages, not simply-core or simply.
-const sfPluginPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-core' && pkg !== 'packages/simply');
+// The shared libraries: plain packages consumed by the plugins, with no oclif commands of their own.
+const libraryPackages = ['packages/simply-core', 'packages/simply-plugin-kit'];
 
-// Every package's test suite relaxes a handful of rules; only simply-core's test override skipped the mocha env.
-const mochaTestPackages = allPackages.filter((pkg) => pkg !== 'packages/simply-core');
-const nonMochaTestPackages = ['packages/simply-core'];
+// sf-plugin's recommended rules only ever applied to the oclif command packages, not the libraries or simply.
+const sfPluginPackages = allPackages.filter((pkg) => !libraryPackages.includes(pkg) && pkg !== 'packages/simply');
+
+// Every package's test suite relaxes a handful of rules; the libraries' test overrides skip the mocha env.
+const mochaTestPackages = allPackages.filter((pkg) => !libraryPackages.includes(pkg));
+const nonMochaTestPackages = libraryPackages;
 
 const headerRule = [
   2,
