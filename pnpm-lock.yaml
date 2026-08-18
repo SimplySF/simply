@@ -104,7 +104,7 @@ importers:
         specifier: ^4.11.2
         version: 4.13.3
       '@simplysf/simply-apex':
-        specifier: workspace:^1.1.19
+        specifier: workspace:^1.2.0
         version: link:../simply-apex
       '@simplysf/simply-data':
         specifier: workspace:^2.3.17
