@@ -13,21 +13,25 @@ Thanks for your interest in contributing to Simply! This document covers the rep
 
 ## Repository Structure
 
-This repository is a Lerna monorepo containing nine Salesforce CLI plugins, plus one internal shared library:
+This repository is a Lerna monorepo containing ten Salesforce CLI plugins, plus three internal libraries. Every package has its own `CONTRIBUTING.md` covering what's specific to it — read this file first, then that one.
 
-| Package                                                       | Description                                      | Path                          |
-| ------------------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
-| [`@simplysf/simply`](packages/simply)                         | Orchestrator plugin — bundles every plugin below | `packages/simply`             |
-| [`@simplysf/simply-apex`](packages/simply-apex)               | Apex commands                                    | `packages/simply-apex`        |
-| [`@simplysf/simply-cicd`](packages/simply-cicd)               | CI/CD pipeline commands                          | `packages/simply-cicd`        |
-| [`@simplysf/simply-data`](packages/simply-data)               | File upload/download commands                    | `packages/simply-data`        |
-| [`@simplysf/simply-document`](packages/simply-document)       | Documentation generation commands                | `packages/simply-document`    |
-| [`@simplysf/simply-package`](packages/simply-package)         | Package dependency management commands           | `packages/simply-package`     |
-| [`@simplysf/simply-permissions`](packages/simply-permissions) | Permissions commands                             | `packages/simply-permissions` |
-| [`@simplysf/simply-project`](packages/simply-project)         | Salesforce project commands                      | `packages/simply-project`     |
-| [`@simplysf/simply-schema`](packages/simply-schema)           | Schema visualization commands                    | `packages/simply-schema`      |
-| [`@simplysf/simply-sobject`](packages/simply-sobject)         | SObject commands                                 | `packages/simply-sobject`     |
-| [`@simplysf/simply-core`](packages/simply-core)               | Shared internal library — not a CLI plugin       | `packages/simply-core`        |
+| Package                                                       | Description                                               | Bundled into `simply`?    |
+| ------------------------------------------------------------- | --------------------------------------------------------- | ------------------------- |
+| [`@simplysf/simply`](packages/simply)                         | Orchestrator plugin — bundles the plugins marked ✅ below | —                         |
+| [`@simplysf/simply-apex`](packages/simply-apex)               | Apex commands                                             | ✅                        |
+| [`@simplysf/simply-cicd`](packages/simply-cicd)               | CI/CD pipeline commands                                   | No — installed on its own |
+| [`@simplysf/simply-data`](packages/simply-data)               | File upload/download commands                             | ✅                        |
+| [`@simplysf/simply-document`](packages/simply-document)       | Documentation generation commands                         | ✅                        |
+| [`@simplysf/simply-package`](packages/simply-package)         | Package dependency management commands                    | ✅                        |
+| [`@simplysf/simply-permissions`](packages/simply-permissions) | Permissions commands                                      | ✅                        |
+| [`@simplysf/simply-project`](packages/simply-project)         | Salesforce project commands                               | ✅                        |
+| [`@simplysf/simply-schema`](packages/simply-schema)           | Schema visualization commands                             | ✅                        |
+| [`@simplysf/simply-sobject`](packages/simply-sobject)         | SObject commands                                          | ✅                        |
+| [`@simplysf/simply-core`](packages/simply-core)               | Shared internal library — not a CLI plugin                | —                         |
+| [`@simplysf/simply-plugin-kit`](packages/simply-plugin-kit)   | Shared oclif command building blocks — not a CLI plugin   | —                         |
+| [`@simplysf/simply-report`](packages/simply-report)           | Shared HTML report scaffolding — not a CLI plugin         | —                         |
+
+The "bundled" column matters when you change a flag: see [Pull Requests](#pull-requests) below.
 
 There's also a top-level [`site/`](site) directory — the [Astro Starlight](https://starlight.astro.build/) documentation site, deployed to GitHub Pages. It's part of the pnpm workspace (so `pnpm install` at the root sets it up too), but it's not a `packages/*` entry, so Lerna never versions, publishes, or runs `build`/`test`/`lint` scripts against it. See [`site/README` conventions below](#documentation-site) for how to work on it.
 
@@ -45,7 +49,7 @@ This repo pins its pnpm version via the `packageManager` field in `package.json`
 ```sh
 corepack enable
 git clone git@github.com:SimplySF/simply-node.git
-cd simply
+cd simply-node
 corepack install   # installs the pnpm version pinned in package.json
 pnpm install
 pnpm run build
