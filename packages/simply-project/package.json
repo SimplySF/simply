@@ -1,7 +1,7 @@
 {
   "name": "@simplysf/simply-project",
   "description": "Utilities for working with Salesforce projects",
-  "version": "1.2.14",
+  "version": "1.2.16",
   "author": "@ClayChipps",
   "homepage": "https://github.com/SimplySF/simply-node",
   "bugs": "https://github.com/SimplySF/simply-node/issues",
@@ -86,7 +86,7 @@
     "readme": "oclif readme --no-aliases",
     "test": "wireit",
     "test:coverage": "vitest run --coverage --project simply-project",
-    "test:nuts": "vitest run --config vitest.nuts.config.ts --project simply-project",
+    "test:nuts": "vitest run --config ../../vitest.nuts.config.ts --project simply-project",
     "test:only": "wireit",
     "test:watch": "vitest watch --project simply-project"
   },

@@ -21,6 +21,7 @@ import { QueryJobV2, type QueryJobInfoV2 } from '@jsforce/jsforce-node/lib/api/b
 import type { Schema } from '@jsforce/jsforce-node';
 import { Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
+import sinon from 'sinon';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Response } from 'undici';
 import { SkipFirstLineTransform, streamBulkQuery, streamBulkQueryToFile } from '../../src/bulk/streamBulkQuery.js';
@@ -67,7 +68,7 @@ describe('SkipFirstLineTransform', () => {
 });
 
 describe('streamBulkQuery', () => {
-  const $$ = new TestContext();
+  const $$ = new TestContext({ sinon });
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {
@@ -114,7 +115,7 @@ describe('streamBulkQuery', () => {
 });
 
 describe('streamBulkQueryToFile', () => {
-  const $$ = new TestContext();
+  const $$ = new TestContext({ sinon });
   const testOrg = new MockTestOrgData();
   let outputPath: string;
 

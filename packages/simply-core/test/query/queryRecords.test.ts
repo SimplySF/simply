@@ -18,6 +18,7 @@ import { QueryJobV2 } from '@jsforce/jsforce-node/lib/api/bulk2.js';
 import type { Schema } from '@jsforce/jsforce-node';
 import { Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
+import sinon from 'sinon';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Response } from 'undici';
 import { queryRecords } from '../../src/query/queryRecords.js';
@@ -38,7 +39,7 @@ async function collect<T>(gen: AsyncGenerator<T>): Promise<T[]> {
 }
 
 describe('queryRecords', () => {
-  const $$ = new TestContext();
+  const $$ = new TestContext({ sinon });
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {

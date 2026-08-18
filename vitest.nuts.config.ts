@@ -14,23 +14,43 @@
  * limitations under the License.
  */
 
+import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
+const packagesDir = fileURLToPath(new URL('./packages/', import.meta.url));
+const setupFile = fileURLToPath(new URL('./vitest.setup.ts', import.meta.url));
+
+// Built the same way as the unit-test projects in `vitest.config.ts`, and for the same two
+// reasons: a bare `projects: ['packages/*']` glob gives each project neither the parent `test`
+// config nor a predictable name, so `--project <package>` (which every package's `test:nuts`
+// script passes) matches nothing. Explicit entries fix both, and resolve correctly regardless
+// of which directory vitest was invoked from.
+const packageProjects = fs
+  .readdirSync(packagesDir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => ({
+    test: {
+      name: entry.name,
+      root: fileURLToPath(new URL(`./packages/${entry.name}/`, import.meta.url)),
+      // @salesforce/core/testSetup registers its stub/restore hooks against the
+      // global beforeEach/afterEach, so vitest must expose test globals at runtime.
+      globals: true,
+      environment: 'node',
+      include: ['test/**/*.nut.ts'],
+      setupFiles: [setupFile],
+      // NUTs create real scratch orgs and run commands against them, so they need much longer
+      // allowances than the unit test config.
+      testTimeout: 1_200_000,
+      hookTimeout: 1_200_000,
+    },
+  }));
+
 export default defineConfig({
-  // Each package's `test:only` wireit task runs `vitest run` with its own directory as the
-  // working directory, but the `projects` glob below must always resolve relative to the repo
-  // root regardless of where vitest was invoked from.
-  root: fileURLToPath(new URL('.', import.meta.url)),
+  root: rootDir,
   test: {
-    environment: 'node',
-    include: ['test/**/*.nut.ts'],
-    projects: ['packages/*'],
-    setupFiles: [fileURLToPath(new URL('./vitest.setup.ts', import.meta.url))],
-    // NUTs create real scratch orgs and run commands against them, so they
-    // need much longer allowances than the unit test config.
-    testTimeout: 1_200_000,
-    hookTimeout: 1_200_000,
+    projects: packageProjects,
     maxWorkers: 5,
   },
 });
