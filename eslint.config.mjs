@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026, Clay Chipps; Copyright (c) 2026 Salesforce, Inc.
+ * Copyright (c) 2026, Clay Chipps.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,8 @@ const headerRule = [
   [
     '',
     {
-      pattern: ' \\* Copyright \\(c\\) \\d{4}, Clay Chipps; Copyright \\(c\\) \\d{4} Salesforce, Inc.',
-      template: ' * Copyright (c) 2026, Clay Chipps; Copyright (c) 2026 Salesforce, Inc.',
+      pattern: ' \\* Copyright \\(c\\) \\d{4}, Clay Chipps\\.',
+      template: ' * Copyright (c) 2026, Clay Chipps.',
     },
     ' *',
     ' * Licensed under the Apache License, Version 2.0 (the "License");',
@@ -127,7 +127,10 @@ const scoped = (pkgs, eslintrcConfig, defaultFiles = toSrcFiles(pkgs)) =>
 
     return {
       ...config,
-      files: [(absoluteFilePath) => pkgDirs.some((dir) => absoluteFilePath.startsWith(dir)) && matchesOriginal(absoluteFilePath)],
+      files: [
+        (absoluteFilePath) =>
+          pkgDirs.some((dir) => absoluteFilePath.startsWith(dir)) && matchesOriginal(absoluteFilePath),
+      ],
     };
   });
 
