@@ -4,25 +4,96 @@
 
 Shared internal utilities for [`@simplysf`](https://github.com/SimplySF/simply-node) Salesforce CLI plugins. This is not a Salesforce CLI plugin itself — it's a plain library consumed by the other packages in this monorepo.
 
+It deliberately does **not** depend on `@salesforce/sf-plugins-core`. Anything needing the oclif flag or command layer belongs in [`@simplysf/simply-plugin-kit`](https://github.com/SimplySF/simply-node/tree/main/packages/simply-plugin-kit) instead.
+
 ## Install
 
 ```bash
 npm install @simplysf/simply-core
 ```
 
-## Bulk API v2 streaming export
+## API
 
-`streamBulkQueryToFile()` runs a SOQL query through Bulk API v2 and streams the CSV results directly to a file, one result page at a time, without buffering the result set in memory.
+Everything below is exported from the package root.
 
-`Connection.bulk2.query()` (jsforce's own convenience method) routes each result page through jsforce's legacy HTTP transport, which fully buffers each page into memory before your code can consume it — this defeats streaming for large exports. `streamBulkQueryToFile()` avoids that by fetching result pages directly with `undici`, converting the response body straight to a Node stream, and piping it to disk with `stream.pipeline()`. jsforce is still used for job creation and polling; only the result-page fetch bypasses it.
+### Querying
+
+| Export                                             | Description                                                                                                                                                                                                                                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `queryRecords(conn, soql, options?)`               | Async generator yielding flat, string-valued records. Picks its own transport: below `bulkThreshold` (default 2000) it uses `Connection#autoFetchQuery`; above it, `streamBulkQuery`, so memory stays flat at any result size. Not for Tooling API queries — Bulk API v2 doesn't support them. |
+| `chunkedInQuery(conn, values, buildSoql, options)` | Runs a query once per chunk of `values`, splicing each chunk into a quoted `IN (...)` clause, and returns every record from every chunk. Use when an `IN` list would otherwise exceed SOQL's length limit.                                                                                     |
+| `escapeSoqlLiteral(value)`                         | Escapes a value for use inside a single-quoted SOQL string literal.                                                                                                                                                                                                                            |
+| `ChunkedInQueryOptions`, `QueryRecordsOptions`     | Option types for the two query helpers.                                                                                                                                                                                                                                                        |
+
+### Bulk API v2 streaming export
+
+| Export                                                                                                           | Description                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `streamBulkQuery(conn, soql, opts?)`                                                                             | Runs a SOQL query through Bulk API v2 and returns the merged CSV results as one `Readable`. |
+| `streamBulkQueryToFile(conn, soql, path, opts?)`                                                                 | The same, written straight to a file — the common case.                                     |
+| `SkipFirstLineTransform`                                                                                         | Strips the duplicate header row from each result page after the first.                      |
+| `StreamBulkQueryOptions`, `StreamBulkQueryResult`, `StreamBulkQueryToFileOptions`, `StreamBulkQueryToFileResult` | Option and result types.                                                                    |
+
+`Connection.bulk2.query()` (jsforce's own convenience method) routes each result page through jsforce's legacy HTTP transport, which fully buffers each page into memory before your code can consume it — defeating streaming for large exports. These helpers avoid that by fetching result pages directly with `undici`, converting the response body straight to a Node stream, and piping it onward. jsforce is still used for job creation and polling; only the result-page fetch bypasses it.
 
 ```ts
-import { Connection } from '@salesforce/core';
 import { streamBulkQueryToFile } from '@simplysf/simply-core';
 
 const result = await streamBulkQueryToFile(connection, 'SELECT Id, Name FROM Account', './accounts.csv');
 // { jobId: '750...', numberRecordsProcessed: 42 }
 ```
+
+### CSV output
+
+| Export                                                | Description                                                                                                          |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `createCsvFileWriter(outputPath, columns)`            | Opens a streaming CSV writer, for writing rows incrementally without holding them all in memory.                     |
+| `writeRecordsToCsvFile(records, outputPath, columns)` | Pipes an `AsyncIterable` of records — e.g. `queryRecords()` — straight to a CSV file. Resolves to `{ recordCount }`. |
+| `CsvFileWriter`                                       | The writer handle returned by `createCsvFileWriter`.                                                                 |
+
+### `sfdx-project.json`
+
+| Export                                                                  | Description                                                                                                                                 |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `readSfdxProject(dir?)`                                                 | Reads and parses the project file.                                                                                                          |
+| `getDefaultPackageDirectory(project)`                                   | Returns the entry flagged `default: true`.                                                                                                  |
+| `getPluginConfig(source, keyPath)`                                      | Walks a dot-delimited path (e.g. `plugins.simply.dependencies.ignore`) through any object, returning `undefined` if any segment is missing. |
+| `SFDX_PROJECT_FILE_NAME`                                                | `'sfdx-project.json'`.                                                                                                                      |
+| `SfdxProject`, `SfdxPackageDirectory`, `SfdxPackageDirectoryDependency` | Types for the parsed file.                                                                                                                  |
+
+### Package IDs
+
+| Export                                                                                                                                         | Description                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `isPackage2Id`, `isPackage2VersionId`, `isSubscriberPackageId`, `isSubscriberPackageVersionId`                                                 | Prefix predicates for the four package ID kinds.                  |
+| `PACKAGE_PREFIX_PACKAGE2`, `PACKAGE_PREFIX_PACKAGE2_VERSION`, `PACKAGE_PREFIX_SUBSCRIBER_PACKAGE`, `PACKAGE_PREFIX_SUBSCRIBER_PACKAGE_VERSION` | The prefixes those predicates check (`0Ho`, `05i`, `033`, `04t`). |
+
+### Metadata package attribution
+
+| Export                                                              | Description                                                                               |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `resolvePackageNamesByApiName(conn, apiNames, options?)`            | Maps metadata API names to the installed package that owns them.                          |
+| `resolvePackageNamesBySubjectId(conn, subjectIds, options?)`        | The same, keyed by subject ID.                                                            |
+| `normalizePublisherName(publisherName, fallbackLabel)`              | Normalizes a publisher name for display, falling back to `fallbackLabel` when absent.     |
+| `LOCAL_PACKAGE_LABEL`, `LOCAL_PUBLISHER_NAME`                       | Labels used for metadata that belongs to the org itself rather than an installed package. |
+| `ResolvePackageNamesByApiNameOptions`, `ResolvePackageNamesOptions` | Option types.                                                                             |
+
+### Config files
+
+| Export                                                | Description                                                 |
+| ----------------------------------------------------- | ----------------------------------------------------------- |
+| `loadJsonConfig(path, schema)` / `loadJsonConfigSync` | Reads a JSON config file and validates it against a schema. |
+| `parseJsonConfig(contents, schema)`                   | The same, from an already-read string.                      |
+| `ConfigSchema`, `JsonConfigResult`                    | Schema and result types.                                    |
+
+### Collections and paths
+
+| Export                            | Description                                                                                    |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `chunk(items, size)`              | Splits an array into fixed-size chunks.                                                        |
+| `mapChunked(items, size, mapper)` | Maps an async `mapper` over an array one chunk at a time, awaiting each chunk before the next. |
+| `ensureDirectory(path)`           | Creates a directory (and parents) if it doesn't already exist.                                 |
+| `timestampForFileName(date?)`     | A filesystem-safe timestamp, for generated output file names.                                  |
 
 ## Issues
 
@@ -30,4 +101,8 @@ Please report any issues at https://github.com/SimplySF/simply-node/issues
 
 ## Contributing
 
-This package is part of the [`@simplysf/simply`](https://github.com/SimplySF/simply-node) monorepo. See the repo's [CONTRIBUTING.md](https://github.com/SimplySF/simply-node/blob/main/CONTRIBUTING.md) for the repo structure, how to set up and build the project, our commit conventions, and how to submit a pull request. Please also read our [Code of Conduct](https://github.com/SimplySF/simply-node/blob/main/CODE_OF_CONDUCT.md).
+This package is part of the [`@simplysf/simply`](https://github.com/SimplySF/simply-node) monorepo. See [CONTRIBUTING.md](CONTRIBUTING.md) for what's specific to this package, and the repo's [root CONTRIBUTING.md](https://github.com/SimplySF/simply-node/blob/main/CONTRIBUTING.md) for repo structure, setup, commit conventions, and how to submit a pull request. Please also read our [Code of Conduct](https://github.com/SimplySF/simply-node/blob/main/CODE_OF_CONDUCT.md).
+
+## License
+
+Licensed under the [Apache-2.0](https://raw.githubusercontent.com/SimplySF/simply-node/main/LICENSE.txt) license.
