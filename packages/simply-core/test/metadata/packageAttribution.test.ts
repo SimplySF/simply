@@ -16,6 +16,7 @@
 
 import { Connection } from '@salesforce/core';
 import { MockTestOrgData, TestContext } from '@salesforce/core/testSetup';
+import sinon from 'sinon';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import {
   LOCAL_PACKAGE_LABEL,
@@ -43,7 +44,7 @@ describe('normalizePublisherName', () => {
 });
 
 describe('resolvePackageNamesBySubjectId', () => {
-  const $$ = new TestContext();
+  const $$ = new TestContext({ sinon });
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {
@@ -122,7 +123,7 @@ describe('resolvePackageNamesBySubjectId', () => {
 });
 
 describe('resolvePackageNamesByApiName', () => {
-  const $$ = new TestContext();
+  const $$ = new TestContext({ sinon });
   const testOrg = new MockTestOrgData();
 
   beforeAll(async () => {
