@@ -59,7 +59,6 @@ const sfPluginPackages = allPackages.filter((pkg) => !libraryPackages.includes(p
 
 // Every package's test suite relaxes a handful of rules; the libraries' test overrides skip the mocha env.
 const mochaTestPackages = allPackages.filter((pkg) => !libraryPackages.includes(pkg));
-const nonMochaTestPackages = libraryPackages;
 
 const headerRule = [
   2,
@@ -103,9 +102,10 @@ const testOverrideRules = {
   '@typescript-eslint/require-await': 'off',
 };
 
-const toSrcFiles = (pkgs) => pkgs.map((pkg) => `${pkg}/**/*.ts`);
-const toProductionFiles = (pkgs) => pkgs.map((pkg) => `${pkg}/src/**/*.ts`);
-const toTestFiles = (pkgs) => pkgs.map((pkg) => `${pkg}/test/**/*.ts`);
+const filesFor = (pkgs, glob) => pkgs.map((pkg) => `${pkg}/${glob}`);
+const toSrcFiles = (pkgs) => filesFor(pkgs, '**/*.ts');
+const toProductionFiles = (pkgs) => filesFor(pkgs, 'src/**/*.ts');
+const toTestFiles = (pkgs) => filesFor(pkgs, 'test/**/*.ts');
 
 // Some eslintrc configs come from nested `overrides` blocks (e.g. rules scoped to certain files
 // only). FlatCompat translates those into a `files: [predicateFn]` entry using absolute paths.
@@ -133,16 +133,7 @@ const scoped = (pkgs, eslintrcConfig, defaultFiles = toSrcFiles(pkgs)) =>
 
 export default [
   {
-    ignores: [
-      'dist/**',
-      'build/**',
-      'lib/**',
-      'coverage/**',
-      'node_modules/**',
-      '**/*.config.js',
-      '**/*.config.cjs',
-      '**/*.config.mjs',
-    ],
+    ignores: ['dist/**', 'build/**', 'lib/**', 'coverage/**', 'node_modules/**', '**/*.config.{js,cjs,mjs}'],
   },
   ...[js.configs.recommended, ...tseslint.configs.recommendedTypeChecked].map((config) => ({
     ...config,
@@ -154,6 +145,16 @@ export default [
       'import-x': importPlugin,
       jsdoc: jsdocPlugin,
       unicorn: unicornPlugin,
+      header: headerPlugin,
+    },
+    languageOptions: {
+      // typescript-eslint's type-aware rules need to know which tsconfig(s) cover these files.
+      // tsconfig.json is a single repo-wide config, so point the parser at the projects that
+      // actually exist, resolved from this config file's directory regardless of cwd.
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['tsconfig.json', 'packages/*/test/tsconfig.json'],
+      },
     },
     rules: {
       'valid-typeof': 'off',
@@ -234,6 +235,10 @@ export default [
       '@typescript-eslint/prefer-string-starts-ends-with': 'error',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       '@typescript-eslint/unified-signatures': 'error',
+
+      'header/header': headerRule,
+
+      ...eslintConfigPrettier.rules,
     },
   },
   {
@@ -247,25 +252,7 @@ export default [
       ],
     },
   },
-  { ...eslintConfigPrettier, files: toSrcFiles(allPackages) },
-  {
-    // typescript-eslint's type-aware rules need to know which tsconfig(s) cover these files.
-    // tsconfig.json is a single repo-wide config, so point the parser at the projects that
-    // actually exist, resolved from this config file's directory regardless of cwd.
-    files: toSrcFiles(allPackages),
-    languageOptions: {
-      parserOptions: {
-        tsconfigRootDir: __dirname,
-        project: ['tsconfig.json', 'packages/*/test/tsconfig.json'],
-      },
-    },
-  },
   ...scoped(sfPluginPackages, { extends: ['plugin:sf-plugin/recommended'] }),
-  {
-    files: toSrcFiles(allPackages),
-    plugins: { header: headerPlugin },
-    rules: { 'header/header': headerRule },
-  },
   ...scoped(mochaTestPackages, { env: { mocha: true }, rules: testOverrideRules }, toTestFiles(mochaTestPackages)),
-  ...scoped(nonMochaTestPackages, { rules: testOverrideRules }, toTestFiles(nonMochaTestPackages)),
+  ...scoped(libraryPackages, { rules: testOverrideRules }, toTestFiles(libraryPackages)),
 ];
