@@ -45,13 +45,14 @@ const allPackages = [
   'packages/simply-package',
   'packages/simply-permissions',
   'packages/simply-plugin-kit',
+  'packages/simply-report',
   'packages/simply-project',
   'packages/simply-schema',
   'packages/simply-sobject',
 ];
 
 // The shared libraries: plain packages consumed by the plugins, with no oclif commands of their own.
-const libraryPackages = ['packages/simply-core', 'packages/simply-plugin-kit'];
+const libraryPackages = ['packages/simply-core', 'packages/simply-plugin-kit', 'packages/simply-report'];
 
 // sf-plugin's recommended rules only ever applied to the oclif command packages, not the libraries or simply.
 const sfPluginPackages = allPackages.filter((pkg) => !libraryPackages.includes(pkg) && pkg !== 'packages/simply');
