@@ -116,16 +116,16 @@ importers:
         specifier: workspace:^2.8.7
         version: link:../simply-package
       '@simplysf/simply-permissions':
-        specifier: workspace:^1.2.21
+        specifier: workspace:^1.2.22
         version: link:../simply-permissions
       '@simplysf/simply-project':
         specifier: workspace:^1.2.14
         version: link:../simply-project
       '@simplysf/simply-schema':
-        specifier: workspace:^0.3.7
+        specifier: workspace:^0.3.8
         version: link:../simply-schema
       '@simplysf/simply-sobject':
-        specifier: workspace:^1.4.8
+        specifier: workspace:^1.4.9
         version: link:../simply-sobject
       debug:
         specifier: ^4.4.3
@@ -399,7 +399,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       '@simplysf/simply-report':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-report
       handlebars:
         specifier: ^4.7.9
@@ -505,7 +505,7 @@ importers:
         specifier: workspace:^1.1.13
         version: link:../simply-core
       '@simplysf/simply-report':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-report
       csv-parse:
         specifier: ^7.0.2
@@ -554,7 +554,7 @@ importers:
         specifier: workspace:^1.0.1
         version: link:../simply-plugin-kit
       '@simplysf/simply-report':
-        specifier: workspace:^1.0.0
+        specifier: workspace:^1.0.1
         version: link:../simply-report
       handlebars:
         specifier: ^4.7.9
