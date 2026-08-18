@@ -3,7 +3,7 @@ title: simply-cicd
 description: Commands for Salesforce CI/CD pipelines — orchestrating scratch-org builds, packaged and unpackaged deployments, and pipeline notifications.
 ---
 
-`@simplysf/simply-cicd` is an [oclif](https://oclif.io/) plugin for the [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) that provides the building blocks for a Salesforce CI/CD pipeline: creating and tearing down scratch orgs, creating and validating 2GP package versions, running multi-stage deployments, and posting pipeline notifications to Microsoft Teams (with Jira story linking).
+`@simplysf/simply-cicd` is an [oclif](https://oclif.io/) plugin for the [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) that provides the building blocks for a Salesforce CI/CD pipeline: creating and tearing down scratch orgs, creating and validating 2GP package versions, running multi-stage deployments, and posting pipeline notifications to Microsoft Teams (with issue-tracker linking).
 
 It's a successor to an internal tool (`coi-cicd`), rebuilt as a proper `sf` plugin under the `sf simply cicd` topic — same pipeline model, now installable via `sf plugins install` like any other Salesforce CLI plugin, with full `--help` output and JSON support on every command.
 
@@ -21,4 +21,4 @@ sf plugins install @simplysf/simply-cicd
 
 ## What it doesn't do (yet)
 
-Every command that talks to source control goes through a small `VcsProvider` abstraction (see [VCS providers](/cicd/concepts/vcs-providers/)) — today only GitLab is implemented. The commands, flags, and concepts on this site are written from that GitLab-first reality; a GitHub provider is a planned addition, not a currently-supported one.
+Every command that talks to source control goes through a small `VcsProvider` abstraction (see [VCS providers](/cicd/concepts/vcs-providers/)). GitLab and GitHub are both implemented; `--vcs-provider` selects between them and defaults to `gitlab`. Most examples on this site are written GitLab-first, since that's the more common setup for these pipelines, but the flags and concepts apply to either platform.
