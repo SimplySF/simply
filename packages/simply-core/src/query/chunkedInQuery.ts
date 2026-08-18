@@ -16,6 +16,7 @@
 
 import { Connection } from '@salesforce/core';
 import { chunk } from '../collection/chunk.js';
+import { escapeSoqlLiteral } from './escapeSoqlLiteral.js';
 
 export type ChunkedInQueryOptions = {
   /**
@@ -35,11 +36,6 @@ export type ChunkedInQueryOptions = {
    */
   tolerateFailure?: boolean;
 };
-
-/** Escape a value for use inside a single-quoted SOQL string literal. */
-function escapeSoqlLiteral(value: string): string {
-  return value.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
-}
 
 /**
  * Run a SOQL query once per chunk of `values`, splicing each chunk into a quoted, comma-joined

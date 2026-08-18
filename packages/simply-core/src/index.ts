@@ -35,6 +35,7 @@ export {
 } from './config/loadJsonConfig.js';
 export { ensureDirectory, timestampForFileName } from './fs/paths.js';
 export { chunkedInQuery, type ChunkedInQueryOptions } from './query/chunkedInQuery.js';
+export { escapeSoqlLiteral } from './query/escapeSoqlLiteral.js';
 export {
   isPackage2Id,
   isPackage2VersionId,
