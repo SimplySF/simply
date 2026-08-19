@@ -125,7 +125,7 @@ importers:
         specifier: workspace:^0.3.12
         version: link:../simply-schema
       '@simplysf/simply-sobject':
-        specifier: workspace:^1.4.13
+        specifier: workspace:^1.5.0
         version: link:../simply-sobject
       debug:
         specifier: ^4.4.3
