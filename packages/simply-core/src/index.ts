@@ -15,6 +15,11 @@
  */
 
 export {
+  authenticateClientCredentials,
+  type ClientCredentialsAuthOptions,
+  type ClientCredentialsAuthResult,
+} from './auth/clientCredentialsAuth.js';
+export {
   SkipFirstLineTransform,
   streamBulkQuery,
   streamBulkQueryToFile,
