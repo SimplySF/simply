@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/SimplySF/simply-node/compare/%40simplysf%2Fsimply-core%401.1.17...%40simplysf%2Fsimply-core%401.2.0) (2026-08-20)
+
+### Features
+
+- **core:** add Client Credentials OAuth authentication ([49a2559](https://github.com/SimplySF/simply-node/commit/49a2559e3b8a5fdd71ade5d475130f44c5f07255))
+
 ## [1.1.17](https://github.com/SimplySF/simply-node/compare/%40simplysf%2Fsimply-core%401.1.16...%40simplysf%2Fsimply-core%401.1.17) (2026-08-18)
 
 **Note:** Version bump only for package @simplysf/simply-core
