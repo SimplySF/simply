@@ -42,4 +42,25 @@ describe('deploy happy-soup install-packaged', () => {
 
     expect(deployHappySoup).toHaveBeenCalledWith(expect.objectContaining({ installType: 'All' }));
   });
+
+  it('passes through the packaging devhub flags', async () => {
+    vi.mocked(deployHappySoup).mockResolvedValue(undefined);
+
+    await DeployHappySoupInstallPackaged.run([
+      '--packaging-devhub-username',
+      'devhub@example.com',
+      '--packaging-devhub-client-id',
+      'client-id',
+      '--packaging-devhub-instance-url',
+      'https://login.salesforce.com',
+    ]);
+
+    expect(deployHappySoup).toHaveBeenCalledWith(
+      expect.objectContaining({
+        packagingDevhubUsername: 'devhub@example.com',
+        packagingDevhubClientId: 'client-id',
+        packagingDevhubInstanceUrl: 'https://login.salesforce.com',
+      }),
+    );
+  });
 });
