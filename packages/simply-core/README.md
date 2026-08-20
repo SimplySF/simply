@@ -16,6 +16,28 @@ npm install @simplysf/simply-core
 
 Everything below is exported from the package root.
 
+### Authentication
+
+| Export                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `authenticateClientCredentials(options)`                      | Authenticates via the OAuth 2.0 Client Credentials grant — a flow the Salesforce CLI has no built-in support for (only web, JWT, and SFDX auth-url). Proxies `@jsforce/jsforce-node`'s OAuth2 token exchange into `@salesforce/core`'s `AuthInfo`, the same way the JWT flow hands off its own token internally, so the resulting org is persisted and alias-able like any other `sf`-authenticated org. |
+| `ClientCredentialsAuthOptions`, `ClientCredentialsAuthResult` | Option and result types.                                                                                                                                                                                                                                                                                                                                                                                 |
+
+```ts
+import { authenticateClientCredentials } from '@simplysf/simply-core';
+
+const { username } = await authenticateClientCredentials({
+  loginUrl: 'https://my-org.my.salesforce.com',
+  consumerKey: 'consumer-key',
+  consumerSecret: 'consumer-secret', // or consumerSecretFile: './consumer-secret.txt'
+  alias: 'my-org',
+  setDefault: true,
+});
+// -> persisted, usable as --target-org my-org anywhere in the sf/simply ecosystem
+```
+
+The Connected App's OAuth policy must include the `api` and `id`/`openid` scopes — `AuthInfo` resolves the username/org ID via `services/oauth2/userinfo`, which depends on them. Client Credentials tokens run as the single "run as" user configured on the Connected App in Setup, not a per-request user.
+
 ### Querying
 
 | Export                                             | Description                                                                                                                                                                                                                                                                                    |
