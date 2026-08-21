@@ -306,7 +306,7 @@ EXAMPLES
   $ sf simply community publish --target-org my-org --name "My Community" --ignore-errors
 ```
 
-_See code: [@simplysf/simply-community](https://github.com/SimplySF/simply-node/blob/@simplysf/simply-community@0.1.0/packages/simply-community/lib/commands/simply/community/publish.js)_
+_See code: [@simplysf/simply-community](https://github.com/SimplySF/simply-node/blob/@simplysf/simply-community@0.2.0/packages/simply-community/lib/commands/simply/community/publish.js)_
 
 ## `sf simply data file upload`
 
