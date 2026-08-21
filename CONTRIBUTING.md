@@ -144,14 +144,7 @@ If your change only affects one package, scope the commit to it, e.g. `feat(simp
 - Make sure `pnpm run build` and `pnpm test` pass before opening the PR — the same checks run in CI and as a pre-push hook.
 - Aim for high test coverage on new code.
 - Update the relevant package's README/command docs if you changed a command's flags or behavior. `packages/simply-data` regenerates its README command docs automatically on version bump (`oclif readme` runs from its `version` script); every other plugin package requires running `pnpm run readme` manually in that package and committing the result.
-- `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `pnpm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `pnpm run build`, so a stale, uncommitted snapshot fails the build.
-- If you change a package's flags and that package is bundled into `@simplysf/simply` (see the orchestrator's `oclif.plugins` list), also rebuild `packages/simply`'s own `command-snapshot.json`. Its wireit cache only watches `packages/simply/src/**/*.ts`, so `pnpm run build` there won't notice a dependency's flags changed and will report cached success without regenerating anything. Force it by running its snapshot generator directly:
-
-  ```sh
-  cd packages/simply
-  node --loader ts-node/esm --no-warnings=ExperimentalWarning ./bin/dev.js snapshot:generate
-  npx prettier --write command-snapshot.json
-  ```
+- `command-snapshot.json` (used to flag accidental breaking changes to commands/flags) regenerates automatically as part of each package's `pnpm run build` — just commit whatever changes. CI re-verifies with `git diff --exit-code` after `pnpm run build`, so a stale, uncommitted snapshot fails the build. This includes `packages/simply`'s own `command-snapshot.json` when you change a plugin bundled into `@simplysf/simply` (see the orchestrator's `oclif.plugins` list): its wireit `command-snapshot` task cross-depends on every bundled plugin's `compile` task, so a root `pnpm run build` (or `pnpm run build` from within `packages/simply`) picks up dependency flag changes and regenerates it without any extra step.
 
 ## Versioning and Publishing
 

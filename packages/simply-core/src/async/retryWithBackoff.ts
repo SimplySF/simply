@@ -23,6 +23,13 @@ export type RetryWithBackoffOptions = {
   backoffFactor: number;
   /** Delay before the first retry. Defaults to 1 second. */
   initialDelay?: Duration;
+  /**
+   * Called with the error that was just thrown to decide whether it's worth retrying. Defaults to
+   * retrying on any error. Return `false` to rethrow immediately regardless of remaining attempts.
+   */
+  shouldRetry?: (error: unknown) => boolean;
+  /** Called before each retry's delay begins, once per retry (not called for the initial attempt). */
+  onRetry?: (error: unknown, attempt: number, delay: Duration) => void;
 };
 
 /**
@@ -30,7 +37,7 @@ export type RetryWithBackoffOptions = {
  * exponentially growing delay between attempts, before rethrowing the last error.
  *
  * @param fn - The operation to attempt.
- * @param options - Retry attempt count and backoff configuration.
+ * @param options - Retry attempt count, backoff configuration, and optional retry hooks.
  * @param attempt - The current attempt number, `0`-indexed. Used internally for recursion.
  * @returns The result of `fn` once it succeeds.
  */
@@ -42,14 +49,19 @@ export async function retryWithBackoff<T>(
   try {
     return await fn();
   } catch (err) {
-    if (attempt >= options.retryAttempts) {
+    const shouldRetry = options.shouldRetry ?? ((): boolean => true);
+
+    if (attempt >= options.retryAttempts || !shouldRetry(err)) {
       throw err;
     }
 
     const initialDelay = options.initialDelay ?? Duration.seconds(1);
-    const delay = initialDelay.milliseconds * options.backoffFactor ** attempt;
+    const delay = Duration.milliseconds(initialDelay.milliseconds * options.backoffFactor ** attempt);
+
+    options.onRetry?.(err, attempt + 1, delay);
+
     await new Promise<void>((resolve) => {
-      setTimeout(resolve, delay);
+      setTimeout(resolve, delay.milliseconds);
     });
 
     return retryWithBackoff(fn, options, attempt + 1);

@@ -19,6 +19,7 @@ export {
   type ClientCredentialsAuthOptions,
   type ClientCredentialsAuthResult,
 } from './auth/clientCredentialsAuth.js';
+export { retryWithBackoff, type RetryWithBackoffOptions } from './async/retryWithBackoff.js';
 export {
   SkipFirstLineTransform,
   streamBulkQuery,

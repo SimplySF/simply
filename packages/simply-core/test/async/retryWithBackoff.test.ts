@@ -16,7 +16,7 @@
 
 import { Duration } from '@salesforce/kit';
 import { describe, expect, it } from 'vitest';
-import { retryWithBackoff } from '../../src/common/retryWithBackoff.js';
+import { retryWithBackoff } from '../../src/async/retryWithBackoff.js';
 
 describe('retryWithBackoff', () => {
   it('should return the result on the first successful attempt without retrying', async () => {
@@ -80,5 +80,55 @@ describe('retryWithBackoff', () => {
     ).rejects.toThrow('failure 3');
 
     expect(calls).to.equal(3);
+  });
+
+  it('should not retry when shouldRetry returns false, even with attempts remaining', async () => {
+    let calls = 0;
+
+    await expect(
+      retryWithBackoff(
+        async () => {
+          calls += 1;
+          throw new Error('not retryable');
+        },
+        {
+          retryAttempts: 3,
+          backoffFactor: 1,
+          initialDelay: Duration.milliseconds(1),
+          shouldRetry: () => false,
+        },
+      ),
+    ).rejects.toThrow('not retryable');
+
+    expect(calls).to.equal(1);
+  });
+
+  it('should call onRetry once per retry with the attempt number and delay, but not on the initial attempt', async () => {
+    let calls = 0;
+    const onRetryCalls: Array<{ attempt: number; delayMs: number }> = [];
+
+    const result = await retryWithBackoff(
+      async () => {
+        calls += 1;
+        if (calls < 3) {
+          throw new Error('transient failure');
+        }
+        return 'recovered';
+      },
+      {
+        retryAttempts: 3,
+        backoffFactor: 2,
+        initialDelay: Duration.milliseconds(1),
+        onRetry: (_err, attempt, delay) => {
+          onRetryCalls.push({ attempt, delayMs: delay.milliseconds });
+        },
+      },
+    );
+
+    expect(result).to.equal('recovered');
+    expect(onRetryCalls).to.deep.equal([
+      { attempt: 1, delayMs: 1 },
+      { attempt: 2, delayMs: 2 },
+    ]);
   });
 });
