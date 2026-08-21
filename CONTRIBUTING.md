@@ -13,13 +13,14 @@ Thanks for your interest in contributing to Simply! This document covers the rep
 
 ## Repository Structure
 
-This repository is a Lerna monorepo containing ten Salesforce CLI plugins, plus three internal libraries. Every package has its own `CONTRIBUTING.md` covering what's specific to it — read this file first, then that one.
+This repository is a Lerna monorepo containing eleven Salesforce CLI plugins, plus three internal libraries. Every package has its own `CONTRIBUTING.md` covering what's specific to it — read this file first, then that one.
 
 | Package                                                       | Description                                               | Bundled into `simply`?    |
 | ------------------------------------------------------------- | --------------------------------------------------------- | ------------------------- |
 | [`@simplysf/simply`](packages/simply)                         | Orchestrator plugin — bundles the plugins marked ✅ below | —                         |
 | [`@simplysf/simply-apex`](packages/simply-apex)               | Apex commands                                             | ✅                        |
 | [`@simplysf/simply-cicd`](packages/simply-cicd)               | CI/CD pipeline commands                                   | No — installed on its own |
+| [`@simplysf/simply-community`](packages/simply-community)     | Salesforce Communities commands                           | ✅                        |
 | [`@simplysf/simply-data`](packages/simply-data)               | File upload/download commands                             | ✅                        |
 | [`@simplysf/simply-document`](packages/simply-document)       | Documentation generation commands                         | ✅                        |
 | [`@simplysf/simply-package`](packages/simply-package)         | Package dependency management commands                    | ✅                        |
