@@ -39,6 +39,7 @@ const allPackages = [
   'packages/simply',
   'packages/simply-apex',
   'packages/simply-cicd',
+  'packages/simply-community',
   'packages/simply-core',
   'packages/simply-data',
   'packages/simply-document',
