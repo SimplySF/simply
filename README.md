@@ -2,19 +2,20 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Simply is a collection of [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) plugins built by [SimplySF](https://github.com/SimplySF) that add commands for working with Apex, CI/CD pipelines, data, documentation generation, packages, permissions, projects, schema visualization, and SObjects in Salesforce orgs.
+Simply is a collection of [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) plugins built by [SimplySF](https://github.com/SimplySF) that add commands for working with Apex, CI/CD pipelines, Communities, data, documentation generation, packages, permissions, projects, schema visualization, and SObjects in Salesforce orgs.
 
 📖 **[Documentation site](https://simplysf.github.io/simply-node/)** — guides and command reference for every plugin, with [`simply-cicd`](https://simplysf.github.io/simply-node/cicd/) covered in the most depth.
 
 ## Packages
 
-This repository is a monorepo. Ten packages are published independently to npm as CLI plugins, plus three internal libraries used by them:
+This repository is a monorepo. Eleven packages are published independently to npm as CLI plugins, plus three internal libraries used by them:
 
 | Package                                                       | Description                                                         |
 | ------------------------------------------------------------- | ------------------------------------------------------------------- |
 | [`@simplysf/simply`](packages/simply)                         | Orchestrator plugin — bundles the plugins marked ✅ below           |
 | [`@simplysf/simply-apex`](packages/simply-apex)               | Commands for working with Apex ✅                                   |
 | [`@simplysf/simply-cicd`](packages/simply-cicd)               | Commands for Salesforce CI/CD pipelines                             |
+| [`@simplysf/simply-community`](packages/simply-community)     | Commands for working with Salesforce Communities ✅                 |
 | [`@simplysf/simply-data`](packages/simply-data)               | Commands for uploading and downloading files in a Salesforce org ✅ |
 | [`@simplysf/simply-document`](packages/simply-document)       | Commands for generating project documentation ✅                    |
 | [`@simplysf/simply-package`](packages/simply-package)         | Commands for managing package dependencies ✅                       |
@@ -46,6 +47,7 @@ sf plugins install @simplysf/simply
 ```sh
 sf plugins install @simplysf/simply-apex
 sf plugins install @simplysf/simply-cicd
+sf plugins install @simplysf/simply-community
 sf plugins install @simplysf/simply-data
 sf plugins install @simplysf/simply-document
 sf plugins install @simplysf/simply-package
