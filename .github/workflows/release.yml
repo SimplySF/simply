@@ -51,22 +51,23 @@ jobs:
 
       - run: pnpm test
 
-      - name: Version and publish (release)
+      - name: Version (release)
         if: github.event_name == 'push' && github.ref_name == 'main'
-        run: pnpm exec lerna publish --conventional-commits --create-release github --yes
+        run: pnpm exec lerna version --conventional-commits --create-release github --yes
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
 
-      - name: Version and publish (prerelease)
+      - name: Version (prerelease)
         if: (github.event_name == 'push' && github.ref_name != 'main') || (github.event_name == 'workflow_dispatch' && inputs.prerelease)
-        run: pnpm exec lerna publish --conventional-commits --conventional-prerelease --preid "${{ inputs.prerelease || 'dev' }}" --create-release github --yes
+        run: pnpm exec lerna version --conventional-commits --conventional-prerelease --preid "${{ inputs.prerelease || 'dev' }}" --create-release github --yes
         env:
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
 
-      - name: Publish tagged versions missing from npm
-        if: github.event_name == 'workflow_dispatch' && !inputs.prerelease
+      # Publishes whatever versions are committed to git but still missing from npm. Deliberately
+      # unconditional (not gated on the version steps above having run): this makes it self-healing
+      # if a *previous* run's version step succeeded (git tagged/pushed) but its npm publish step
+      # failed partway through a batch, since lerna version and npm publish are not atomic together.
+      - name: Publish
         run: pnpm exec lerna publish from-package --yes
         env:
           NPM_CONFIG_PROVENANCE: true
