@@ -20,6 +20,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import headerPlugin from 'eslint-plugin-header';
 import importPlugin from 'eslint-plugin-import-x';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
+import sfPluginPlugin from 'eslint-plugin-sf-plugin';
 import unicornPlugin from 'eslint-plugin-unicorn';
 import { minimatch } from 'minimatch';
 import tseslint from 'typescript-eslint';
@@ -27,6 +28,18 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// eslint-plugin-header's rule predates meta.schema entirely, and flat config (as of ESLint 10)
+// treats an undeclared schema as "no options allowed" instead of "unvalidated" — reject our
+// headerRule options outright. Restore the old permissive behavior explicitly.
+headerPlugin.rules.header.meta.schema = false;
+
+// The plugin also only ever calls the long-deprecated context.getSourceCode(), which ESLint 10
+// removed outright (the replacement, the context.sourceCode property, has existed since ESLint 8.40
+// and still works). The plugin is unmaintained, so shim the method back in rather than fork it.
+const originalHeaderCreate = headerPlugin.rules.header.create;
+headerPlugin.rules.header.create = (context) =>
+  originalHeaderCreate(Object.assign(Object.create(context), { getSourceCode: () => context.sourceCode }));
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
@@ -256,7 +269,10 @@ export default [
       ],
     },
   },
-  ...scoped(sfPluginPackages, { extends: ['plugin:sf-plugin/recommended'] }),
+  // eslint-plugin-sf-plugin ships native flat configs (an array of config objects) rather than an
+  // eslintrc-style shareable config, so it's applied directly instead of through the `scoped` /
+  // FlatCompat helper used for the plugins that still only publish eslintrc configs.
+  ...sfPluginPlugin.configs.recommended.map((config) => ({ ...config, files: toSrcFiles(sfPluginPackages) })),
   ...scoped(mochaTestPackages, { env: { mocha: true }, rules: testOverrideRules }, toTestFiles(mochaTestPackages)),
   ...scoped(libraryPackages, { rules: testOverrideRules }, toTestFiles(libraryPackages)),
 ];

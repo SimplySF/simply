@@ -68,7 +68,6 @@ describe('mapChunked', () => {
   it('passes each item its index in the source array, across chunk boundaries', async () => {
     const seen: Array<[string, number]> = [];
 
-    // eslint-disable-next-line @typescript-eslint/require-await
     await mapChunked(['a', 'b', 'c', 'd', 'e'], 2, async (item, index) => {
       seen.push([item, index]);
     });

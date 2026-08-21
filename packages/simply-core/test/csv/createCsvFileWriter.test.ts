@@ -107,9 +107,7 @@ describe('writeRecordsToCsvFile', () => {
   it('produces only the header row for an empty source', async () => {
     outputPath = path.join(os.tmpdir(), `simply-core-csv-pipeline-test-${Date.now()}.csv`);
 
-    async function* empty(): AsyncGenerator<Record<string, unknown>> {
-      // eslint-disable-next-line no-empty-function
-    }
+    async function* empty(): AsyncGenerator<Record<string, unknown>> {}
 
     const result = await writeRecordsToCsvFile(empty(), outputPath, ['Id', 'Name']);
 
